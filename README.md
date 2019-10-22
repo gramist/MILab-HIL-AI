@@ -14,3 +14,16 @@ Checkout this repo, install dependencies, then start the gulp process with the f
 ### Project Description
 This project was designed to enable intercompatibility by adding servers, DBs, etc. in the project of all staff members.
 It also modularized each of the complex sources to help users understand.
+
+
+### How to Run?
+Terminal_1
+```
+> cd MILab-HIL-AI
+> python server.py
+```
+
+Terminal_2
+```
+> curl -i -H "Content-Type: application/json" -X POST -d "{\"PacketType\": \"SensorLog\", \"PatientSeq\": 37, \"SensorIdk\": \"A2:22:44:55:22:11\", \"SensorCode\": 1, \"SensorCount\": 11, \"LogTime\": \"2019-08-25 1:16:30\"}" 127.0.0.1:5000/foo
+```
