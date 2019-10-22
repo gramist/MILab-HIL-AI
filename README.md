@@ -12,4 +12,5 @@ Checkout this repo, install dependencies, then start the gulp process with the f
 <https://www.notion.so/devilzcough/c018bbd49e3e46499756464f1853a70e?v=ca10e27e372147508b2ca6d5009feb13>
 
 ### Project Description
-The project was originally designed to be compatible by adding servers, DBs, etc. to the developer's project.
+This project was designed to enable intercompatibility by adding servers, DBs, etc. in the project of all staff members.
+It also modularized each of the complex sources to help users understand.
