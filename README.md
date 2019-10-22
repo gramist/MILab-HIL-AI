@@ -15,6 +15,15 @@ Checkout this repo, install dependencies, then start the gulp process with the f
 This project was designed to enable intercompatibility by adding servers, DBs, etc. in the project of all staff members.
 It also modularized each of the complex sources to help users understand.
 
+### DB Table Create Query
+CREATE TABLE `patient` (
+    idx INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    patient_num VARCHAR(32) NOT NULL,
+    data VARCHAR(64) NOT NULL
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
 
 ### How to Run?
 Terminal_1
