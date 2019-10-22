@@ -16,6 +16,7 @@ This project was designed to enable intercompatibility by adding servers, DBs, e
 It also modularized each of the complex sources to help users understand.
 
 ### DB Table Create Query
+```sql
 CREATE TABLE `patient` (
     idx INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     patient_num VARCHAR(32) NOT NULL,
@@ -24,6 +25,7 @@ CREATE TABLE `patient` (
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
+```
 
 ### How to Run?
 Terminal_1
