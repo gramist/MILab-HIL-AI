@@ -25,6 +25,17 @@ CREATE TABLE `patient` (
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
+
+CREATE TABLE 'today_avg' (
+    idx BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    patient_seq VARCHAR(20) NOT NULL,
+    day_time VARCHAR(255) NOT NULL,
+    illuminance VARCHAR(255) NOT NULL,
+    noise INT(11) NOT NULL 
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
 ```
 
 ### How to Run?

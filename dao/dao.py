@@ -1,4 +1,3 @@
-import json
 import pymysql
 from lib.fileIO import FileIO
 
@@ -11,13 +10,13 @@ def getConnection():
                            db=db_info['db'], charset=db_info['charset'], autocommit=True)
 
 
-def get_data(patient_num):
+def get_data(patient_seq):
     try:
         conn = getConnection()
 
         cursor = conn.cursor()
         sql = "SELECT data FROM patient WHERE patient_num=%s"
-        cursor.execute(sql, patient_num)
+        cursor.execute(sql, patient_seq)
 
         data = cursor.fetchall()
 
@@ -33,13 +32,119 @@ def get_data(patient_num):
     return data
 
 
-def set_data(patient_num, data):
+def set_data(patient_seq, data):
     try:
         conn = getConnection()
 
         cursor = conn.cursor()
         sql = "INSERT INTO patient(patient_num, data) VALUE (%s, %s)"
-        cursor.execute(sql, (patient_num, data))
+        cursor.execute(sql, (patient_seq, data))
+
+        cursor.fetchone()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-INSERT ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+
+def del_data(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'DELETE FROM patient WHERE patient_num=%s AND idx NOT IN( SELECT * FROM (SELECT A.idx FROM patient A ' \
+              'WHERE A.patient_num=%s ORDER BY A.idx desc limit 32)as tmp)'
+        cursor.execute(sql, (patient_seq, patient_seq))
+
+        cursor.fetchone()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-DELETE ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+
+def get_outdoor_data(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'select illuminance, noise, log_time from w_outdoor_log where patient_seq=%s and ' \
+              'log_time between date_add(now(),interval -1 day) and now()'
+        cursor.execute(sql, patient_seq)
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-SELECT ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
+def get_patient_location(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'SELECT patient_location FROM W_PATIENT WHERE patient_seq=%s'
+        cursor.execute(sql, patient_seq)
+
+        data = cursor.fetchone()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-SELECT ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
+def set_today_avg(patient_seq, illu, noise):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'insert into today_avg (patient_seq, illuminance, noise) value (%s, %s, %s)'
+        cursor.execute(sql, (patient_seq, illu, noise))
+
+        cursor.fetchone()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-INSERT ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+
+def get_today_avg(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'select illuminance, noise from today_avg where patient_seq=%s;'
+        cursor.execute(sql, patient_seq)
 
         data = cursor.fetchone()
 
@@ -52,17 +157,18 @@ def set_data(patient_num, data):
         cursor.close()
         conn.close()
 
+    return data
 
-def del_data(patient_num):
+
+def del_past_today_avg():
     try:
         conn = getConnection()
 
         cursor = conn.cursor()
-        sql = 'DELETE FROM patient WHERE patient_num=%s AND idx NOT IN( SELECT * FROM (SELECT A.idx FROM patient A ' \
-              'WHERE A.patient_num=%s ORDER BY A.idx desc limit 32)as tmp); '
-        cursor.execute(sql, (patient_num, patient_num))
+        sql = 'delete from today_avg where date not in curdate()'
+        cursor.execute(sql)
 
-        data = cursor.fetchone()
+        cursor.fetchone()
 
     except Exception as e:
         conn.rollback()
@@ -72,3 +178,24 @@ def del_data(patient_num):
         conn.commit()
         cursor.close()
         conn.close()
+
+
+def run_sql_hard_code(sql):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        cursor.execute(sql)
+
+        data = cursor.fetchone()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-SELECT ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return True
