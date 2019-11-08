@@ -79,7 +79,7 @@ def get_outdoor_data(patient_seq):
 
         cursor = conn.cursor()
         sql = 'select illuminance, noise, log_time from w_outdoor_log where patient_seq=%s and ' \
-              'log_time between date_add(now(),interval -1 day) and now()'
+              'log_time between date_add(curdate(),interval -1 day) and curdate()'
         cursor.execute(sql, patient_seq)
 
         data = cursor.fetchall()
@@ -117,14 +117,14 @@ def get_patient_location(patient_seq):
 
     return data
 
-
-def set_today_avg(patient_seq, illu, noise):
+#수정 필
+def set_today_avg(patient_seq, day_time, illu, noise):
     try:
         conn = getConnection()
 
         cursor = conn.cursor()
-        sql = 'insert into today_avg (patient_seq, illuminance, noise) value (%s, %s, %s)'
-        cursor.execute(sql, (patient_seq, illu, noise))
+        sql = 'insert into today_avg (patient_seq, day_time, illuminance, noise) value (%s, %s, %s, %s)'
+        cursor.execute(sql, (patient_seq, day_time, illu, noise))
 
         cursor.fetchone()
 
@@ -137,16 +137,16 @@ def set_today_avg(patient_seq, illu, noise):
         cursor.close()
         conn.close()
 
-
+#수정 필
 def get_today_avg(patient_seq):
     try:
         conn = getConnection()
 
         cursor = conn.cursor()
-        sql = 'select illuminance, noise from today_avg where patient_seq=%s;'
+        sql = 'select illuminance, noise, day_time from today_avg where patient_seq=%s;'
         cursor.execute(sql, patient_seq)
 
-        data = cursor.fetchone()
+        data = cursor.fetchall()
 
     except Exception as e:
         conn.rollback()
@@ -159,13 +159,13 @@ def get_today_avg(patient_seq):
 
     return data
 
-
-def del_past_today_avg():
+#수정 필
+def del_all_data_today_avg():
     try:
         conn = getConnection()
 
         cursor = conn.cursor()
-        sql = 'delete from today_avg where date not in curdate()'
+        sql = 'delete from today_avg'
         cursor.execute(sql)
 
         cursor.fetchone()

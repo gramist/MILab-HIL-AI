@@ -67,8 +67,8 @@ class FileIO:
             'y': 0.000100
         }
         try:
-            location_range['x'] = self.config.get('Location_Range', 'x')
-            location_range['y'] = self.config.get('Location_Range', 'y')
+            location_range['x'] = float(self.config.get('Location_Range', 'x'))
+            location_range['y'] = float(self.config.get('Location_Range', 'y'))
         except Exception as e:
             print('[ConfigParser ERROR]\n' + e)
 

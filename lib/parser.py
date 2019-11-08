@@ -24,6 +24,7 @@ def str_to_list(data):
     return result
 
 
+# SensorLog와 OutdoorLog 판단 후, 파싱
 def json_parser(data):
     # data = {"PacketType": "SensorLog",
     #         "PatientSeq": 37,
@@ -70,7 +71,7 @@ def make_requestObj(packet_type, packet_content, time, patient_seq):
         'Time': time,
         'PatientSeq': patient_seq
     }
-    result = json.dumps(result)
+    result = json.dumps(result, ensure_ascii=False)
 
     return result
 
@@ -90,3 +91,9 @@ def auto_parser(data):
         raise TypeError('This is not the type of data supported by this program.')
 
     return result
+
+
+def str_list_to_float_list(data):
+    for i, val in enumerate(data):
+        data[i] = float(val)
+    return data

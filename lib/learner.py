@@ -85,17 +85,17 @@ class Learner:
 
                 if 1 in ans or 2 in ans:
                     if 1 in ans:
-                        status = "Repeated behavior is suspected."
+                        status = "반복행동이 의심됩니다."
                         return status
                     if 2 in ans:
-                        status = "Suspect insomnia"
+                        status = "불면증세를 보입니다."
                         return status
                 else:
-                    status = "Normal"
-                    return status
+                    # status = "Normal"
+                    return False
             else:
-                status = 'Normal, loss: {}'.format(loss * 100)
-                return status
+                # status = 'Normal, loss: {}'.format(loss * 100)
+                return False
 
         except Exception as e:
             print('[Learner-ERROR] : ', e)

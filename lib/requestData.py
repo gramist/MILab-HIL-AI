@@ -14,3 +14,4 @@ class requestData:
             print('[Request ERROR]\n' + e)
         finally:
             print('postData result : ', response)
+
