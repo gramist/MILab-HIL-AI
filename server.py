@@ -4,45 +4,55 @@ from flask import Flask, abort, request, render_template
 
 from dao import dao
 from lib import parser
+from lib import compare
 from lib.fileIO import FileIO
 from lib.learner import Learner
-
+from lib.requestData import requestData
 
 app = Flask(__name__)
 
 learner = Learner(414, 1, 0, 0, 0)
 process = learner.getProcess()
 
+
 @app.route('/')
 def main():
     return render_template("Hil_index.html")
+
 
 @app.route('/table1')
 def table1():
     return render_template("Hil_table1.html")
 
+
 @app.route('/table2')
 def table2():
     return render_template("Hil_table2.html")
+
 
 @app.route('/table3')
 def table3():
     return render_template("Hil_table3.html")
 
+
 @app.route('/map')
 def map():
     return render_template("Hil_map.html")
 
+
 @app.route('/schedule')
 def schedule():
     return render_template("Hil_schedule.html")
+
 
 @app.route('/foo', methods=['GET', 'POST'])
 def foo():
     if not request.json:
         abort(400)
 
-
+    result_msg = {
+        'ResultMessage': 'OK'
+    }
 
     # # log = [YYYY - MM - DD, HH: MM:SS, sensor# , hash#]
     # # result = ['2019-08-05', '07:55:13', 1, 1]
@@ -67,17 +77,19 @@ def foo():
 
             # 추후 이 아래에 DB insert, 알림 프로세스 제작 필요.
             print('status : ', status)
-            result = {
-                'ResultMessage': status
-            }
-            return json.dumps(result)
+            obj = parser.make_requestObj(
+                'AbnormalBehavior',
+                status,
+                request.json['LogTime'],
+                request.json['PatientSeq']
+            )
+            requestData().postData(obj)
 
-    # elif type(result) == dict:
-    #     # 습도, 온도 Table과 비교. 미세먼지, 초미세먼지 상태 보고 나쁘면 DB insert, 알림 프로세스 제작 필요.
+            return json.dumps(result_msg)
 
-    result_msg = {
-        'ResultMessage': 'OK'
-    }
+    elif type(result) == dict:
+        # 습도, 온도 테이블과 비교. 미세먼지, 초미세먼지 상태 보고 나쁘면 HIL 서버로 request 해야함. lib.requestData().postData(obj).
+        compare.chk_all(result)
 
     return json.dumps(result_msg)
 
