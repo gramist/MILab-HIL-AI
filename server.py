@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, abort, request
+from flask import Flask, abort, request, render_template
 
 from dao import dao
 from lib import parser
@@ -13,11 +13,36 @@ app = Flask(__name__)
 learner = Learner(414, 1, 0, 0, 0)
 process = learner.getProcess()
 
+@app.route('/')
+def main():
+    return render_template("Hil_index.html")
+
+@app.route('/table1')
+def table1():
+    return render_template("Hil_table1.html")
+
+@app.route('/table2')
+def table2():
+    return render_template("Hil_table2.html")
+
+@app.route('/table3')
+def table3():
+    return render_template("Hil_table3.html")
+
+@app.route('/map')
+def map():
+    return render_template("Hil_map.html")
+
+@app.route('/schedule')
+def schedule():
+    return render_template("Hil_schedule.html")
 
 @app.route('/foo', methods=['GET', 'POST'])
 def foo():
     if not request.json:
         abort(400)
+
+
 
     # # log = [YYYY - MM - DD, HH: MM:SS, sensor# , hash#]
     # # result = ['2019-08-05', '07:55:13', 1, 1]
