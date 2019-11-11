@@ -1,6 +1,4 @@
-import logging
 import configparser
-import os
 
 
 class FileIO:

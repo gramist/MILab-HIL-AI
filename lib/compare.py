@@ -104,44 +104,59 @@ def noise_com(data):
 
 # 금일 조도, 소음 평균값 DB 저장
 # 시간에 따른 평균을 각각 구해야 할 것 같다.......
-def insert_data_avg(data):
+def insert_data_avg():
     # Delete all data int today_avg table.
     dao.del_all_data_today_avg()
-    # 시간 값 추출 후 아침, 점심, 저녁, 밤으로 구분
-    outdoor_data = dao.get_outdoor_data(data['PatientSeq'])
-    day_time_data = [[], [], [], []]
-    for val in outdoor_data:
-        if 5 < val[2].time().hour < 12:
-            day_time_data[0].append(val)
-        elif 11 < val[2].time().hour < 18:
-            day_time_data[1].append(val)
-        elif 17 < val[2].time().hour < 22:
-            day_time_data[2].append(val)
-        elif (21 < val[2].time().hour) or (val[2].time().hour < 6):
-            day_time_data[3].append(val)
+    # 시간 값 추출 후 아침, 점심, 저녁, 밤, 환자번호로 구분
+    outdoor_data = dao.get_outdoor_data()
+
+    patient_cnt = 0
+    day_time_data = [[[], [], [], []]]
+    for i, val in enumerate(outdoor_data):
+        if i is 0:
+            day_time_data[patient_cnt].append(val[3])
+            i += 1
+        elif day_time_data[patient_cnt][4] is not val[3]:
+            patient_cnt += 1
+            day_time_data.append([[], [], [], []])
+            day_time_data[patient_cnt].append(val[3])
+
+        if day_time_data[patient_cnt][4] == val[3]:
+            if 5 < val[2].time().hour < 12:
+                day_time_data[patient_cnt][0].append(val)
+            elif 11 < val[2].time().hour < 18:
+                day_time_data[patient_cnt][1].append(val)
+            elif 17 < val[2].time().hour < 22:
+                day_time_data[patient_cnt][2].append(val)
+            elif (21 < val[2].time().hour) or (val[2].time().hour < 6):
+                day_time_data[patient_cnt][3].append(val)
 
     # day = [('95', '76', datetime.datetime(2019, 11, 5, 6, 30, 33)), ('95', '76', datetime.datetime......)]
     # val = ('95', '76', datetime.datetime(2019, 11, 5, 6, 30, 33)
     # 아침, 점심, 저녁, 밤 데이터를 평균을 구한 후, insert to today_avg.
-    for i, day in enumerate(day_time_data):
-        avg_list = [0, 0]
-        val_cnt = 0
-        for val in day:
-            avg_list[0] += int(val[0])
-            avg_list[1] += int(val[1])
-            val_cnt += 1
-        avg_list[0] = avg_list[0] / val_cnt
-        avg_list[1] = avg_list[1] / val_cnt
-        day_time_data[i] = avg_list
+    for day_data in day_time_data:
+        for i, day in enumerate(day_data):
+            avg_list = [0, 0]
+            val_cnt = 0
+            patient_seq = 0
+            if type(day) is not int:
+                for val in day:
+                    avg_list[0] += int(val[0])
+                    avg_list[1] += int(val[1])
+                    val_cnt += 1
+                    patient_seq = val[3]
+                avg_list[0] = avg_list[0] / val_cnt
+                avg_list[1] = avg_list[1] / val_cnt
+                # day_data[i] = avg_list
 
-        day_time = 'MORNING'
-        if i == 1:
-            day_time = 'LUNCH'
-        elif i == 2:
-            day_time = 'DINNER'
-        elif i == 3:
-            day_time = 'NIGHT'
-        dao.set_today_avg(data['PatientSeq'], day_time, avg_list[0], avg_list[1])
+                day_time = 'MORNING'
+                if i == 1:
+                    day_time = 'LUNCH'
+                elif i == 2:
+                    day_time = 'DINNER'
+                elif i == 3:
+                    day_time = 'NIGHT'
+            dao.set_today_avg(patient_seq, day_time, avg_list[0], avg_list[1])
 
 
 # 1. 환자가 외출 상태일 때, 외부 센서의 데이터를 통하여 날씨등의 위험요소 판단 후 result 변수에 append
@@ -163,6 +178,4 @@ def chk_all(data):
     for msg in result:
         if msg is not None:
             obj = parser.make_requestObj('OutdoorSensing', msg, data['LogTime'], data['PatientSeq'])
-            # 완성되면 이 부분의 주석을 풀어서 HIL 서버로 request를 날려. print 부분은 지워버리고....
-            # requestData().postData(obj)
-            print('chk_outdoor의 obj : ', obj)
+            requestData().postData(obj)

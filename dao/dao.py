@@ -73,14 +73,14 @@ def del_data(patient_seq):
         conn.close()
 
 
-def get_outdoor_data(patient_seq):
+def get_outdoor_data():
     try:
         conn = getConnection()
 
         cursor = conn.cursor()
-        sql = 'select illuminance, noise, log_time from w_outdoor_log where patient_seq=%s and ' \
-              'log_time between date_add(curdate(),interval -1 day) and curdate()'
-        cursor.execute(sql, patient_seq)
+        sql = 'select illuminance, noise, log_time, patient_seq from w_outdoor_log where log_time between date_add(' \
+              'curdate(), interval -1 day) and curdate()'
+        cursor.execute(sql)
 
         data = cursor.fetchall()
 
@@ -117,7 +117,30 @@ def get_patient_location(patient_seq):
 
     return data
 
-#수정 필
+
+def get_patient_seq_from_outdoor_log():
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'select distinct patient_seq from w_outdoor_log where log_time between date_add(curdate(),' \
+              ' interval -1 day) and curdate();'
+        cursor.execute(sql)
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-SELECT ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
 def set_today_avg(patient_seq, day_time, illu, noise):
     try:
         conn = getConnection()
@@ -137,7 +160,7 @@ def set_today_avg(patient_seq, day_time, illu, noise):
         cursor.close()
         conn.close()
 
-#수정 필
+
 def get_today_avg(patient_seq):
     try:
         conn = getConnection()
@@ -159,7 +182,7 @@ def get_today_avg(patient_seq):
 
     return data
 
-#수정 필
+
 def del_all_data_today_avg():
     try:
         conn = getConnection()

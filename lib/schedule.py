@@ -2,9 +2,9 @@ import pandas as pd
 
 sensorActionD = {1: "화장실 이용", 2: "냉장고 이용", 3: "식사 시간", 4: "외출 시간", 5: "방문 열림", 6: "약 복용 시간"}
 
-dir = './data/inputNormalD12-1.csv'
+dir = '../data/inputNormalD12-1.csv'
 rData = pd.read_csv(dir, header=None)
-
+print(rData)
 tmp = []
 for i, log in rData.iterrows():
     h = log[0]

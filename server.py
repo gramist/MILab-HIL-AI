@@ -5,9 +5,11 @@ from flask import Flask, abort, request, render_template
 from dao import dao
 from lib import parser
 from lib import compare
+from lib import timeSchedule
 from lib.fileIO import FileIO
 from lib.learner import Learner
 from lib.requestData import requestData
+
 
 app = Flask(__name__)
 
@@ -75,20 +77,19 @@ def foo():
             # ##############################################
             status = learner.getStatus(batch)
 
-            # 추후 이 아래에 DB insert, 알림 프로세스 제작 필요.
             print('status : ', status)
-            obj = parser.make_requestObj(
-                'AbnormalBehavior',
-                status,
-                request.json['LogTime'],
-                request.json['PatientSeq']
-            )
-            requestData().postData(obj)
+            if status is not None:
+                obj = parser.make_requestObj(
+                    'AbnormalBehavior',
+                    status,
+                    request.json['LogTime'],
+                    request.json['PatientSeq']
+                )
+                requestData().postData(obj)
 
             return json.dumps(result_msg)
 
     elif type(result) == dict:
-        # 습도, 온도 테이블과 비교. 미세먼지, 초미세먼지 상태 보고 나쁘면 HIL 서버로 request 해야함. lib.requestData().postData(obj).
         compare.chk_all(result)
 
     return json.dumps(result_msg)
@@ -96,6 +97,12 @@ def foo():
 
 if __name__ == '__main__':
     server_info = FileIO().read_server_info()
+
+    timeSchedule.run_scheduler(compare.insert_data_avg, 11, 00)
+    # 머신러닝 학습, 스케줄 create 스케줄러 걸어야 함.
+    # timeSchedule.run_scheduler(학습_함수, 11, 00)\
+    # timeSchedule.run_scheduler(스케줄 create, 11, 00)
+
     app.run(host=server_info['IP'], port=server_info['Port'], threaded=False)
     # app.run(host=server_info['IP'], port=server_info['Port'], debug=True, use_reloader=False)
 
