@@ -4,8 +4,9 @@ from flask import Flask, abort, request, render_template
 
 from dao import dao
 from lib import parser
-from lib import compare
 from lib import timeSchedule
+from lib import controller
+
 from lib.fileIO import FileIO
 from lib.learner import Learner
 from lib.requestData import requestData
@@ -39,7 +40,9 @@ def table3():
 
 @app.route('/map')
 def map():
-    return render_template("Hil_map.html")
+    location_list = controller.get_today_locations(40)
+    # print(location_list)
+    return render_template("Hil_map.html", location_list=location_list)
 
 
 @app.route('/schedule')
@@ -90,7 +93,7 @@ def foo():
             return json.dumps(result_msg)
 
     elif type(result) == dict:
-        compare.chk_all(result)
+        controller.chk_all(result)
 
     return json.dumps(result_msg)
 
@@ -98,10 +101,10 @@ def foo():
 if __name__ == '__main__':
     server_info = FileIO().read_server_info()
 
-    timeSchedule.run_scheduler(compare.insert_data_avg, 11, 00)
+    timeSchedule.run_scheduler(controller.insert_data_avg, 16, 32)
     # 머신러닝 학습, 스케줄 create 스케줄러 걸어야 함.
-    # timeSchedule.run_scheduler(학습_함수, 11, 00)\
-    # timeSchedule.run_scheduler(스케줄 create, 11, 00)
+    # timeSchedule.run_scheduler(학습_함수, 23, 00)\
+    # timeSchedule.run_scheduler(스케줄 create, 23, 00)
 
     app.run(host=server_info['IP'], port=server_info['Port'], threaded=False)
     # app.run(host=server_info['IP'], port=server_info['Port'], debug=True, use_reloader=False)
