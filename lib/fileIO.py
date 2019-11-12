@@ -9,7 +9,7 @@ class FileIO:
         try:
             self.config.read('conf/server.properties')
         except Exception as e:
-            print('[ConfigParser ERROR]\n' + e)
+            print('[ConfigParser ERROR]\n', e)
 
     def read_server_info(self):
         server_info = {
@@ -20,7 +20,7 @@ class FileIO:
             server_info['IP'] = self.config.get('Server_Info', 'ip')
             server_info['Port'] = self.config.get('Server_Info', 'port')
         except Exception as e:
-            print('[ConfigParser ERROR]\n' + e)
+            print('[ConfigParser ERROR]\n', e)
 
         return server_info
 
@@ -33,7 +33,7 @@ class FileIO:
             request_info['URL'] = self.config.get('Request_info', 'url')
             request_info['Port'] = self.config.get('Request_info', 'port')
         except Exception as e:
-            print('[ConfigParser ERROR]\n' + e)
+            print('[ConfigParser ERROR]\n', e)
 
         return request_info
 
@@ -55,7 +55,7 @@ class FileIO:
             db_info['db'] = self.config.get('Database_Info', 'db')
             db_info['charset'] = self.config.get('Database_Info', 'charset')
         except Exception as e:
-            print('[ConfigParser ERROR]\n' + e)
+            print('[ConfigParser ERROR]\n', e)
 
         return db_info
 
@@ -68,6 +68,6 @@ class FileIO:
             location_range['x'] = float(self.config.get('Location_Range', 'x'))
             location_range['y'] = float(self.config.get('Location_Range', 'y'))
         except Exception as e:
-            print('[ConfigParser ERROR]\n' + e)
+            print('[ConfigParser ERROR]\n', e)
 
         return location_range

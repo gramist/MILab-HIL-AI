@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from dao import dao
 from lib import compare
 from lib import parser
@@ -71,7 +73,11 @@ def insert_data_avg():
                     day_time = 'DINNER'
                 elif i == 3:
                     day_time = 'NIGHT'
-            dao.set_today_avg(patient_seq, day_time, avg_list[0], avg_list[1])
+                dao.set_today_avg(patient_seq, day_time, avg_list[0], avg_list[1])
+
+    now = datetime.now()
+    print('[%s-%s-%s %s:%s:%s]' % (now.year, now.month, now.day, now.hour, now.minute, now.second),
+          ' insert_data_avg is done.')
 
 
 # 1. 환자가 외출 상태일 때, 외부 센서의 데이터를 통하여 날씨등의 위험요소 판단 후 result 변수에 append

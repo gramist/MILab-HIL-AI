@@ -1,29 +1,18 @@
-import os
-import csv
 import traceback
 
-import pandas as pd
 import numpy as np
-import time
-
-import tensorflow as tf
-
-from keras.models import Sequential
-from keras.layers import Dense
 from keras.models import model_from_json
-from keras import layers, models
-from keras.callbacks import ModelCheckpoint
 
 from lib.processData import Preprocess
 
 
 class Learner:
-    # max = 414
+    # max_val = 414
     # C = 1
     # total_acc = 0
     # total_loss = 0
     # count = 0
-    def __init__(self, max, C, total_acc, total_loss, count):
+    def __init__(self, max_val, C, total_acc, total_loss, count):
         try:
             json_file = open('./model_ae/model%d.json' % C, 'r')
             loaded_ae_json = json_file.read()
@@ -48,7 +37,7 @@ class Learner:
             lstm_model.compile(loss='categorical_crossentropy', optimizer='adam',
                                metrics=['accuracy'])
 
-            process = Preprocess(nor_max=max)
+            process = Preprocess(nor_max=max_val)
 
             self.total_acc = total_acc
             self.total_loss = total_loss
@@ -68,7 +57,8 @@ class Learner:
     def getStatus(self, batch):
         try:
             batch_x = np.array(batch)
-            decoded_imgs = self.ae_model.predict(batch_x, verbose=0)
+            # decoded_imgs = self.ae_model.predict(batch_x, verbose=0)
+            self.ae_model.predict(batch_x, verbose=0)
             loss, acc = self.ae_model.evaluate(batch_x, batch_x, verbose=0)
             print("%s: %.2f, %s: %.2f%%" % (self.ae_model.metrics_names[0], loss * 100,
                                             self.ae_model.metrics_names[1], acc * 100))
