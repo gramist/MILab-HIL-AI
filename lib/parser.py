@@ -52,6 +52,7 @@ def json_parser(data):
     return result
 
 
+# 하드코딩 되어 있어서 범용적으로 사용 못함.
 def tuple_to_list(data):
     result = []
 
