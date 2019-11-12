@@ -141,6 +141,29 @@ def get_patient_seq_from_outdoor_log():
     return data
 
 
+def get_patient_location_from_outdoor_log(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'select location from w_outdoor_log where patient_seq=%s and date_format(' \
+              'log_time, "%%Y-%%m-%%d")=curdate() '
+        cursor.execute(sql, patient_seq)
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-SELECT ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
 def set_today_avg(patient_seq, day_time, illu, noise):
     try:
         conn = getConnection()
