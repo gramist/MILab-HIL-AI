@@ -50,22 +50,22 @@ index=[
 
 @app.route('/')
 def main():
-    return render_template("Hil_index.html")
+    return render_template("Hil_index.html",index=index)
 
 
 @app.route('/table1')
 def table1():
-    return render_template("Hil_table1.html")
+    return render_template("Hil_table1.html",posts=posts)
 
 
 @app.route('/table2')
 def table2():
-    return render_template("Hil_table2.html")
+    return render_template("Hil_table2.html",posts1=posts1)
 
 
 @app.route('/table3')
 def table3():
-    return render_template("Hil_table3.html")
+    return render_template("Hil_table3.html",posts2=posts2)
 
 
 @app.route('/map')
@@ -77,7 +77,7 @@ def map():
 
 @app.route('/schedule')
 def schedule():
-    return render_template("Hil_schedule.html")
+    return render_template("Hil_schedule.html",posts3=posts3)
 
 
 @app.route('/foo', methods=['GET', 'POST'])
