@@ -4,19 +4,49 @@ from flask import Flask, abort, request, render_template
 
 from dao import dao
 from lib import parser
-from lib import timeSchedule
-from lib import controller
-
+from lib import compare
 from lib.fileIO import FileIO
 from lib.learner import Learner
 from lib.requestData import requestData
-
 
 app = Flask(__name__)
 
 learner = Learner(414, 1, 0, 0, 0)
 process = learner.getProcess()
 
+#post는 index값, symp값, time값을 인자로 받습니다.
+posts=[
+    { 'index':'10','symp':'불면','time':'2019-01-02 / 22:08:30'},
+    { 'index':'9','symp':'공격적인 행동','time':'2019-01-02 / 22:08:30'}
+]
+
+#post1~3까지는 time값과 name값을 인자로 받습니다.
+posts1=[
+    { 'time':'2019-01-02 / 21:08:30','name':'초미세먼지 나쁨 / 3 / 실내활동을 권장합니다'},
+    { 'time':'2019-01-02 / 21:08:30','name':'미세먼지 매우나쁨 / 4 / 실내활동을 권장합니다'}
+]
+
+posts2=[
+    { 'time':'2019-01-02 / 21:08:30','name':'약을 복용하지 않았습니다.'},
+    { 'time':'2019-01-02 / 21:08:30','name':'약을 복용하지 않았습니다.'}
+]
+
+posts3=[
+    { 'time':'2019-01-02 / 07:00-08:00','name':'기상'},
+    { 'time':'2019-01-02 / 07:00-08:00','name':'기상'}
+]
+
+#index는 퍼센트만 받아오면 됩니다. 혹은 행동을 한 횟수로 가져와도 됩니다.=>행동으로 받아올경우 %가아닌 px단위로 가져오기 때문에 그래프가 이상합니다.
+#한마디로 행동 횟수는 10회라고 가정하면 10%로 가져오는게 좋습니다.
+index=[
+    { 'name':'배회','per':'30%'},
+    { 'name':'낙상','per':'50%'},
+    { 'name':'수집','per':'60%'},
+    { 'name':'과식','per':'45%'},
+    { 'name':'부적절한 성적행동','per':'32%'},
+    { 'name':'망상','per':'62%'},
+    { 'name':'공격적인 행동','per':'75%'}
+]
 
 @app.route('/')
 def main():
@@ -80,6 +110,7 @@ def foo():
             # ##############################################
             status = learner.getStatus(batch)
 
+            # 추후 이 아래에 DB insert, 알림 프로세스 제작 필요.
             print('status : ', status)
             if status is not None:
                 obj = parser.make_requestObj(

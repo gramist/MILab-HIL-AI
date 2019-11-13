@@ -55,34 +55,38 @@
                   <li><span>20</span></li>
                   <li><span>0</span></li>
                 </ul>
+                {% block content %}
+                {% for index in index %}
                 <div class="bar">
-                  <div class="title">배회</div>
-                  <div class="value tooltips" data-original-title="8.500" data-toggle="tooltip" data-placement="top">85%</div>
+                  <div class="title">{{index.name}}</div>
+                  <div class="value tooltips" data-original-title="{{index.per}}" data-toggle="tooltip" data-placement="top">{{index.per}}</div>
                 </div>
-                <div class="bar ">
-                  <div class="title">낙상</div>
-                  <div class="value tooltips" data-original-title="5.000" data-toggle="tooltip" data-placement="top">50%</div>
-                </div>
-                <div class="bar ">
-                  <div class="title">수집</div>
-                  <div class="value tooltips" data-original-title="6.000" data-toggle="tooltip" data-placement="top">60%</div>
-                </div>
-                <div class="bar ">
-                  <div class="title">과식</div>
-                  <div class="value tooltips" data-original-title="4.500" data-toggle="tooltip" data-placement="top">45%</div>
-                </div>
-                <div class="bar">
-                  <div class="title">부적절한 성적 행동</div>
-                  <div class="value tooltips" data-original-title="3.200" data-toggle="tooltip" data-placement="top">32%</div>
-                </div>
-                <div class="bar ">
-                  <div class="title">망상</div>
-                  <div class="value tooltips" data-original-title="6.200" data-toggle="tooltip" data-placement="top">62%</div>
-                </div>
-                <div class="bar">
-                  <div class="title">공격적인 행동</div>
-                  <div class="value tooltips" data-original-title="7.500" data-toggle="tooltip" data-placement="top">75%</div>
-                </div>
+                {% endfor %}
+                {% endblock %}
+<!--                <div class="bar ">-->
+<!--                  <div class="title">낙상</div>-->
+<!--                  <div class="value tooltips" data-original-title="5.000" data-toggle="tooltip" data-placement="top">50%</div>-->
+<!--                </div>-->
+<!--                <div class="bar ">-->
+<!--                  <div class="title">수집</div>-->
+<!--                  <div class="value tooltips" data-original-title="6.000" data-toggle="tooltip" data-placement="top">60%</div>-->
+<!--                </div>-->
+<!--                <div class="bar ">-->
+<!--                  <div class="title">과식</div>-->
+<!--                  <div class="value tooltips" data-original-title="4.500" data-toggle="tooltip" data-placement="top">45%</div>-->
+<!--                </div>-->
+<!--                <div class="bar">-->
+<!--                  <div class="title">부적절한 성적 행동</div>-->
+<!--                  <div class="value tooltips" data-original-title="3.200" data-toggle="tooltip" data-placement="top">32%</div>-->
+<!--                </div>-->
+<!--                <div class="bar ">-->
+<!--                  <div class="title">망상</div>-->
+<!--                  <div class="value tooltips" data-original-title="6.200" data-toggle="tooltip" data-placement="top">62%</div>-->
+<!--                </div>-->
+<!--                <div class="bar">-->
+<!--                  <div class="title">공격적인 행동</div>-->
+<!--                  <div class="value tooltips" data-original-title="7.500" data-toggle="tooltip" data-placement="top">75%</div>-->
+<!--                </div>-->
               </div>
               <!--custom chart end-->
             </div><!-- /row -->

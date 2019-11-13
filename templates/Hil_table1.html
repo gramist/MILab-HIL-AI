@@ -28,20 +28,19 @@
     <section id="main-content">
       <section class="wrapper">
        	<h3><i class="fa fa-angle-right"></i>스케줄 상세사항</h3>
-    	  	<div class="row mt">
-            
-             <div class="col-lg-12">
+          <div class="row mt">
+            <div class="col-lg-12">
               <div class="content-panel">
-		  				  <h4><i class="fa fa-angle-right"></i>스케줄 상세사항 표</h4>
-                <div class="pull-right">
-                <form>
-              <input type="text" name="text" value="날짜입력" / >
-              <input type="button" value="검색" / >
-            </form>
-          </div>
-                  <section id="no-more-tables">
-                    <table class="table table-bordered table-striped table-condensed cf">
-                      <thead>
+		  	    <h4><i class="fa fa-angle-right"></i>스케줄 상세사항 표</h4>
+                  <div class="pull-right">
+                    <form>
+                      <input type="text" name="text" value="날짜입력" />
+                      <input type="button" value="검색" />
+                    </form>
+                  </div>
+                    <section id="no-more-tables">
+                      <table class="table table-bordered table-striped table-condensed cf">
+                        <thead>
                           <tr>
                             <th>Index</th>
                             <th>증상</th>
@@ -49,165 +48,75 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td data-title="Index">10</td>
-                            <td data-title="증상">공격적인 행동</td>
-                            <td data-title="발생시간">2019-01-02 / 21:08:30</td>
+                        {% block content %}
+                        {% for post in posts %}
+                        <tr>
+                            <td data-title="Index">{{post.index}}</td>
+                            <td data-title="증상">{{post.symp}}</td>
+                            <td data-title="발생시간">{{post.time}}</td>
                           </tr>
-                          <tr>
-                            <td data-title="Index">9</td>
-                            <td data-title="증상">반복적인 행동</td>
-                            <td data-title="발생시간">2019-01-02 / 19:15:35</td>
-                          </tr>
-                          <tr>
-                            <td data-title="Index">8</td>
-                            <td data-title="증상">반복적인 행동</td>
-                            <td data-title="발생시간">2019-01-02 / 19:15:37</td>
-                          </tr>
-                          <tr>
-                            <td data-title="Index">7</td>
-                            <td data-title="증상">배회</td>
-                            <td data-title="발생시간">2019-01-02 / 18:24:53</td>
-                          </tr>
-                          <tr>
-                            <td data-title="Index">6</td>
-                            <td data-title="증상">수집</td>
-                            <td data-title="발생시간">2019-01-02 / 04:32:35</td>
-                          </tr>
-                          <tr>
-                            <td data-title="Index">5</td>
-                            <td data-title="증상">과식</td>
-                            <td data-title="발생시간">2019-01-02 / 18:04:53</td>
-                          </tr>
-                          <tr>
-                            <td data-title="Index">4</td>
-                            <td data-title="증상">과식</td>
-                            <td data-title="발생시간">2019-01-02 / 12:30:43</td>
-                          </tr>
-                          <tr>
-                            <td data-title="Index">3</td>
-                            <td data-title="증상">공격적인 행동</td>
-                            <td data-title="발생시간">2019-01-02 / 08:05:07</td>
-                          </tr>
-                          <tr>
-                            <td data-title="Index">2</td>
-                            <td data-title="증상">불면</td>
-                            <td data-title="발생시간">2019-01-02 / 04:32:15</td>
-                          </tr>
-                          <tr>
-                            <td data-title="Index">1</td>
-                            <td data-title="증상">배회</td>
-                            <td data-title="발생시간">2019-01-02 / 04:32:15</td>
-                          </tr>
+                        {% endfor %}
+                        {% endblock %}
+<!--                          <tr>-->
+<!--                            <td data-title="Index">10</td>-->
+<!--                            <td data-title="증상">공격적인 행동</td>-->
+<!--                            <td data-title="발생시간">2019-01-02 / 21:08:30</td>-->
+<!--                          </tr>-->
+<!--                          <tr>-->
+<!--                            <td data-title="Index">9</td>-->
+<!--                            <td data-title="증상">반복적인 행동</td>-->
+<!--                            <td data-title="발생시간">2019-01-02 / 19:15:35</td>-->
+<!--                          </tr>-->
+<!--                          <tr>-->
+<!--                            <td data-title="Index">8</td>-->
+<!--                            <td data-title="증상">반복적인 행동</td>-->
+<!--                            <td data-title="발생시간">2019-01-02 / 19:15:37</td>-->
+<!--                          </tr>-->
+<!--                          <tr>-->
+<!--                            <td data-title="Index">7</td>-->
+<!--                            <td data-title="증상">배회</td>-->
+<!--                            <td data-title="발생시간">2019-01-02 / 18:24:53</td>-->
+<!--                          </tr>-->
+<!--                          <tr>-->
+<!--                            <td data-title="Index">6</td>-->
+<!--                            <td data-title="증상">수집</td>-->
+<!--                            <td data-title="발생시간">2019-01-02 / 04:32:35</td>-->
+<!--                          </tr>-->
+<!--                          <tr>-->
+<!--                            <td data-title="Index">5</td>-->
+<!--                            <td data-title="증상">과식</td>-->
+<!--                            <td data-title="발생시간">2019-01-02 / 18:04:53</td>-->
+<!--                          </tr>-->
+<!--                          <tr>-->
+<!--                            <td data-title="Index">4</td>-->
+<!--                            <td data-title="증상">과식</td>-->
+<!--                            <td data-title="발생시간">2019-01-02 / 12:30:43</td>-->
+<!--                          </tr>-->
+<!--                          <tr>-->
+<!--                            <td data-title="Index">3</td>-->
+<!--                            <td data-title="증상">공격적인 행동</td>-->
+<!--                            <td data-title="발생시간">2019-01-02 / 08:05:07</td>-->
+<!--                          </tr>-->
+<!--                          <tr>-->
+<!--                            <td data-title="Index">2</td>-->
+<!--                            <td data-title="증상">불면</td>-->
+<!--                            <td data-title="발생시간">2019-01-02 / 04:32:15</td>-->
+<!--                          </tr>-->
+<!--                          <tr>-->
+<!--                            <td data-title="Index">1</td>-->
+<!--                            <td data-title="증상">배회</td>-->
+<!--                            <td data-title="발생시간">2019-01-02 / 04:32:15</td>-->
+<!--                          </tr>-->
                         </tbody>
-                    </table>
-                  </section>
+                      </table>
+                    </section>
+                  </div>
                 </div>
               </div>
-            </div>
       		</section><! --/wrapper -->
-        </section>
+          </section>
     
 
-<!--
-    <section id="container" >
-      <section id="main-content">
-        <section class="wrapper">
-          <h3><i class="fa fa-angle-right"></i> Data Flow </h3>
-            <div class="row mt">
-              <div class="col-lg-12">
-                <div class="content-panel">
-                  <h4><i class="fa fa-angle-right"></i>(A) Accuracy</h4>
-                    <section id="unseen">
-                      <table class="table table-bordered table-striped table-condensed">
-                        <div id="mychart" style="width:75%" align="center">
-                        <canvas id="myChart" width="400" height="400"></canvas>
-                        <script>
-                        var ctx = document.getElementById('myChart').getContext('2d');
-                        var myChart = new Chart(ctx, {
-                          type: 'line',
-                        data: {
-                          labels: [0,10,20,30,40,50],
-                          datasets: [{ 
-                          data: [0.930,0.970,0.980,0.990,0.995,0.997],
-                          label: "Training Data",
-                          borderColor: "#3e95cd",
-                          fill: false
-                          }, { 
-                          data: [0.960,0.970,0.985,0.992,0.997,0.997],
-                          label: "Validation Data",
-                          borderColor: "#8e5ea2",
-                          fill: false
-                          }, 
-                          ]
-                        },
-                        options: {
-                          title: {
-                            display: true,
-                            text: 'Accuracy'
-                          }
-                        }
-                      });
-                        </script>
-                        </div>
-                      </table>
-                    </section>
-                  </div>
-                </div>  
-              </div>
-            </section>
-          </section>
-
-      <section id="container" >
-      <section id="main-content">
-        <section class="wrapper">
-          <h3><i class="fa fa-angle-right"></i>Data Flow</h3>
-            <div class="row mt">
-              <div class="col-lg-12">
-                <div class="content-panel">
-                  <h4><i class="fa fa-angle-right"></i>(B) Loss</h4>
-                    <section id="unseen">
-                      <table class="table table-bordered table-striped table-condensed">
-                        <div id="mychart1" style="width:75%" align="center">
-                        <canvas id="myChart1" width="400" height="400"></canvas>
-                        <script>
-                        var ctx = document.getElementById('myChart1').getContext('2d');
-                        var myChart1 = new Chart(ctx, {
-                          type: 'line',
-                        data: {
-                          labels: [0,10,20,30,40,50],
-                          datasets: [{ 
-                          data: [0.250,0.050,0.025,0.020,0.019,0.010],
-                          label: "Training Data",
-                          borderColor: "#3e95cd",
-                          fill: false
-                          }, { 
-                          data: [0.150,0.048,0.023,0.018,0.016,0.009],
-                          label: "Validation Data",
-                          borderColor: "#8e5ea2",
-                          fill: false
-                          }, 
-                          ]
-                        },
-                        options: {
-                          title: {
-                            display: true,
-                            text: 'Loss'
-                          }
-                        }
-                      });
-                        </script>
-                        </div>
-                      </table>
-                    </section>
-                  </div>
-                </div>     
-              </div>
-            </section>
-          </section>
-          -->
-      <!--main content end-->
-      <!--footer start-->
       <!-- 페이징 그리기 -->
     <div class="paging">
   <a href="#" class="btn_arr prev"><span class=""><</span></a>     

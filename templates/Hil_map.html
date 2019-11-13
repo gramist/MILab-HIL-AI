@@ -8,11 +8,12 @@
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
     <title>DASHGUM - Bootstrap Admin Template</title>
+    <script src="{{url_for('static',filename='chart.min.js')}}"></script>>
     <!-- Bootstrap core CSS -->
     <link href="{{url_for('static',filename='css/bootstrap.css')}}" rel="stylesheet">
     <!--external css-->
     <link href="{{url_for('static',filename='font-awesome/css/font-awesome.css')}}" rel="stylesheet" />
-
+        
     <!-- Custom styles for this templates -->
     <link href="{{url_for('static',filename='css/style.css')}}" rel="stylesheet">
     <link href="{{url_for('static',filename='css/style-responsive.css')}}" rel="stylesheet">
@@ -28,6 +29,25 @@
 		}
 	</style>
     <script>
+		function initMap() {
+			var mapOptions = {
+				zoom: 14,
+				center: new google.maps.LatLng(37.5510, 127.0757),
+				mapTypeId: 'roadmap'
+			};
+			var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            const roadTripCoordinates = {{ location_list|safe }};
+			var roadTrip = new google.maps.Polyline({
+				path: roadTripCoordinates,
+				strokeColor: '#FF0000',
+				strokeOpacity: 1.0,
+				strokeWeight: 2
+			});
+			roadTrip.setMap(map);
+		}
+	</script>
+
+
 		function initMap() {
 			var mapOptions = {
 				zoom: 14,
