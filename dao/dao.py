@@ -226,6 +226,117 @@ def del_all_data_today_avg():
         conn.close()
 
 
+def get_abnormal_behavior(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'SELECT log_time, content from AbnormalBehavior where patient_seq=%s order by log_time'
+        cursor.execute(sql, patient_seq)
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-DELETE ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
+def get_abnormal_week(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'SELECT content from AbnormalBehavior where patient_seq=%s and log_time between date_add(' \
+              'now(), interval -1 week) and now() order by log_time'
+        cursor.execute(sql, patient_seq)
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-DELETE ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
+def get_outdoor_sensing(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'SELECT log_time, content from OutdoorSensing where patient_seq=%s order by log_time'
+        cursor.execute(sql, patient_seq)
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-DELETE ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
+def get_today_schedule(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'SELECT time, content from today_schedule where patient_seq=%s order by log_time'
+        cursor.execute(sql, patient_seq)
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-DELETE ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
+def get_past_schedule(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'SELECT log_time, content from PastSchedule where patient_seq=%s order by log_time'
+        cursor.execute(sql, patient_seq)
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-DELETE ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
 def run_sql_hard_code(sql):
     try:
         conn = getConnection()
