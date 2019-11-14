@@ -149,8 +149,6 @@ def table1():
     pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
     return render_template('Hil_table1.html', users=pagination_users, page=page, per_page=per_page,
                            pagination=pagination)
-    posts = controller.get_abnormal_list(37)
-    return render_template("Hil_table1.html", posts=posts)
 
 #외부환경 상세사항
 @app.route('/table2')
@@ -161,8 +159,6 @@ def table2():
     pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
     return render_template('Hil_table2.html', posts1=pagination_posts1, page=page, per_page=per_page,
                            pagination=pagination )
-    posts1 = controller.get_outdoor_list(37)
-    return render_template("Hil_table2.html", posts1=posts1)
 
 #스케줄 미 이행 상세사항
 @app.route('/table3')
@@ -173,9 +169,6 @@ def table3():
     pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
     return render_template('Hil_table3.html', posts2=pagination_posts2, page=page, per_page=per_page,
                            pagination=pagination )
-    posts2 = controller.get_past_schedule(37)
-    return render_template("Hil_table3.html", posts2=posts2)
-
 
 @app.route('/map')
 def map():
@@ -191,9 +184,6 @@ def schedule():
     pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
     return render_template('Hil_schedule.html', posts3=pagination_posts3, page=page, per_page=per_page,
                            pagination=pagination )
-    posts3 = controller.get_today_schedule(37)
-    return render_template("Hil_schedule.html",posts3=posts3)
-
 
 @app.route('/foo', methods=['GET', 'POST'])
 def foo():
