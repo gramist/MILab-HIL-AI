@@ -13,28 +13,21 @@ learner = Learner(414, 1, 0, 0, 0)
 process = learner.getProcess()
 
 
-# 센서 페이징 받아오기
-def get_users(offset=0, per_page=10):
-    users = controller.get_abnormal_list(37)
-    return users[offset: offset + per_page]
-
-
-# 외부환경 페이징 받아오기
-def get_posts1(offset=0, per_page=10):
-    posts1 = controller.get_outdoor_list(37)
-    return posts1[offset: offset + per_page]
-
-
-# 이상행동 페이징 받아오기
-def get_posts2(offset=0, per_page=10):
-    posts2 = controller.get_past_schedule(37)
-    return posts2[offset: offset + per_page]
-
-
-# 스케줄 페이징 받아오기
-def get_posts3(offset=0, per_page=10):
-    posts3 = controller.get_today_schedule(37)
-    return posts3[offset: offset + per_page]
+def get_paging(page, patient_seq, offset=0, per_page=10):
+    result = [{}]
+    # 이상증세 리스트를 참고한 페이징 get
+    if page == 'table1':
+        result = controller.get_abnormal_list(patient_seq)
+    # 외부 센서 리스트를 참고한 페이징 get
+    elif page == 'table2':
+        result = controller.get_outdoor_list(patient_seq)
+    # 스케줄 미 이행 리스트를 참고한 페이징 get
+    elif page == 'table3':
+        result = controller.get_past_schedule(patient_seq)
+    # 머신러닝 스케줄을 참고한 페이징 get
+    elif page == 'schedule':
+        result = controller.get_today_schedule(patient_seq)
+    return result[offset: offset + per_page]
 
 
 @app.route('/<patient_seq>')
@@ -49,7 +42,7 @@ def table1(patient_seq):
     page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
     users = controller.get_abnormal_list(patient_seq)
     total = len(users)
-    pagination_users = get_users(offset=offset, per_page=per_page)
+    pagination_users = get_paging('table1', patient_seq, offset=offset, per_page=per_page)
     pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
     return render_template('Hil_table1.html', users=pagination_users, page=page, per_page=per_page,
                            pagination=pagination)
@@ -61,7 +54,7 @@ def table2(patient_seq):
     page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
     posts1 = controller.get_outdoor_list(patient_seq)
     total = len(posts1)
-    pagination_posts1 = get_posts1(offset=offset, per_page=per_page)
+    pagination_posts1 = get_paging('table2', patient_seq, offset=offset, per_page=per_page)
     pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
     return render_template('Hil_table2.html', posts1=pagination_posts1, page=page, per_page=per_page,
                            pagination=pagination)
@@ -73,7 +66,7 @@ def table3(patient_seq):
     page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
     posts2 = controller.get_past_schedule(patient_seq)
     total = len(posts2)
-    pagination_posts2 = get_posts2(offset=offset, per_page=per_page)
+    pagination_posts2 = get_paging('table3', patient_seq, offset=offset, per_page=per_page)
     pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
     return render_template('Hil_table3.html', posts2=pagination_posts2, page=page, per_page=per_page,
                            pagination=pagination)
@@ -91,7 +84,7 @@ def schedule(patient_seq):
     page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
     posts3 = controller.get_today_schedule(patient_seq)
     total = len(posts3)
-    pagination_posts3 = get_posts3(offset=offset, per_page=per_page)
+    pagination_posts3 = get_paging('schedule', patient_seq, offset=offset, per_page=per_page)
     pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
     return render_template('Hil_schedule.html', posts3=pagination_posts3, page=page, per_page=per_page,
                            pagination=pagination)
