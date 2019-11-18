@@ -3,7 +3,6 @@ from datetime import datetime
 from dao import dao
 from lib import compare
 from lib import parser
-
 from lib.fileIO import FileIO
 from lib.requestData import requestData
 
