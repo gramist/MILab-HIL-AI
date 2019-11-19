@@ -8,7 +8,7 @@
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
     <title>DASHGUM - Bootstrap Admin Template</title>
-    <script src="{{url_for('static',filename='chart.min.js')}}"></script>>
+    <script src="{{url_for('static',filename='chart.min.js')}}"></script>
     <!-- Bootstrap core CSS -->
     <link href="{{url_for('static',filename='css/bootstrap.css')}}" rel="stylesheet">
     <!--external css-->
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <style>
 		#map {
-			height: 1000px;
-			width: 800px;
+			height: 500px;
+			width: 350px;
 		}
 	</style>
     <script>
@@ -37,27 +37,6 @@
 			};
 			var map = new google.maps.Map(document.getElementById('map'), mapOptions);
             const roadTripCoordinates = {{ location_list|safe }};
-			var roadTrip = new google.maps.Polyline({
-				path: roadTripCoordinates,
-				strokeColor: '#FF0000',
-				strokeOpacity: 1.0,
-				strokeWeight: 2
-			});
-			roadTrip.setMap(map);
-		}
-	</script>
-
-
-		function initMap() {
-			var mapOptions = {
-				zoom: 14,
-				center: new google.maps.LatLng(37.5510, 127.0757),
-				mapTypeId: 'roadmap'
-			};
-			var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-            const roadTripCoordinates = {{ location_list|safe }};
-
 			var roadTrip = new google.maps.Polyline({
 				path: roadTripCoordinates,
 				strokeColor: '#FF0000',
@@ -95,9 +74,6 @@
       <footer class="site-footer">
           <div class="text-center">
               세종대학교 병원
-              <a href="responsive_table.html#" class="go-top">
-                  <i class="fa fa-angle-up"></i>
-              </a>
           </div>
       </footer>
       <!--footer end-->
