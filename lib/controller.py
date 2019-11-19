@@ -142,7 +142,7 @@ def get_abnormal_list(patient_seq):
     result = []
 
     for i, row in enumerate(selected_data):
-        json_data = {'index': str(i), 'symp': '불면', 'time': str(row[0]).replace(' ', ' / ')}
+        json_data = {'index': str(i), 'symp': '이상증세', 'time': str(row[0]).replace(' ', ' / ')}
 
         if row[1] == '배회 중입니다.':
             json_data['symp'] = '배회'
@@ -216,7 +216,7 @@ def get_abnormal_week(patient_seq):
 
     result = []
     for i, row in enumerate(get_data):
-        json_data = {'name': '반복행동', 'per': 0}
+        json_data = {'name': '이상증세', 'per': 0}
         behavior = ''
         if row[0] == '배회 중입니다.':
             behavior = '배회'

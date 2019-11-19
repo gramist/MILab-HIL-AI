@@ -45,6 +45,7 @@ class Learner:
             self.process = process
             self.ae_model = ae_model
             self.lstm_model = lstm_model
+            self.max = max_val
             print('Complete Model compile and preprocess')
 
         except Exception as e:
@@ -90,3 +91,18 @@ class Learner:
         except Exception as e:
             print('[Learner-ERROR] : ', e)
             traceback.print_exc()
+
+    def decodeData(self, data_):
+        decoded = []
+        data_ = data_.tolist()
+        for i, data in enumerate(data_):
+            h = np.argmax(data[:24])+1
+            m = (np.argmax(data[24:30])+1) * 10
+            s = np.argmax(data[30:36])+1
+
+            nor = data[36] * self.max
+            # nor = data[36] * std_max
+
+            decoded.append([h, m, s, int(nor)])
+
+        return decoded
