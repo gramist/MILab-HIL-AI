@@ -14,6 +14,9 @@ class Learner:
     # count = 0
     def __init__(self, max_val, C, total_acc, total_loss, count):
         try:
+            process = Preprocess(nor_max=max_val)
+
+            # Autoencoder Model load
             json_file = open('./model_ae/model%d.json' % C, 'r')
             loaded_ae_json = json_file.read()
             json_file.close()
@@ -37,16 +40,30 @@ class Learner:
             lstm_model.compile(loss='categorical_crossentropy', optimizer='adam',
                                metrics=['accuracy'])
 
-            process = Preprocess(nor_max=max_val)
+            # Vae Model load
+            json_file = open('./model_vae/model%d.json' % C, 'r')
+            loaded_ae_json = json_file.read()
+            json_file.close()
+            vae_model = model_from_json(loaded_ae_json)
+            # load weights into new model
+            vae_model.load_weights("./model_vae/model%d.h5" % C)
+            print("Loaded Vae model from disk")
+
+            vae_model.compile(loss='binary_crossentropy', optimizer='adadelta',
+                              metrics=['accuracy'])
 
             self.total_acc = total_acc
             self.total_loss = total_loss
+
             self.count = count
             self.process = process
+
             self.ae_model = ae_model
             self.lstm_model = lstm_model
+            self.vae_model = vae_model
+
             self.max = max_val
-            print('Complete Model compile and preprocess')
+            print('Complete Models compile and preprocess')
 
         except Exception as e:
             print('[Learner-init-ERROR] : ', e)
@@ -98,6 +115,11 @@ class Learner:
         for i, data in enumerate(data_):
             h = np.argmax(data[:24])+1
             m = (np.argmax(data[24:30])+1) * 10
+            if 60 == m:
+                h += 1
+                if 24 <= h:
+                    h = 0
+                m = 00
             s = np.argmax(data[30:36])+1
 
             nor = data[36] * self.max
@@ -106,3 +128,16 @@ class Learner:
             decoded.append([h, m, s, int(nor)])
 
         return decoded
+
+    def make_schedule(self, batch):
+        # print('batch : ', batch)
+        batch_x = np.array(batch)
+        decoded_imgs = self.vae_model.predict(batch_x, verbose=0)
+        # print(decoded_imgs)
+        loss, acc = self.vae_model.evaluate(batch_x, batch_x, verbose=0)
+        print("%s: %.2f, %s: %.2f%%" % (self.vae_model.metrics_names[0], loss * 100,
+                                        self.vae_model.metrics_names[1], acc * 100))
+
+        newData = self.decodeData(decoded_imgs)
+
+        return newData

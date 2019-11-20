@@ -1,5 +1,7 @@
 import pandas as pd
 
+from lib.learner import Learner
+
 sensorActionD = {1: "화장실 이용", 2: "냉장고 이용", 3: "식사 시간", 4: "외출 시간", 5: "방문 열림", 6: "약 복용 시간", 7: "기타"}
 
 dir = '../data/inputNormalD12-1.csv'

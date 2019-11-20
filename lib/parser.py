@@ -98,3 +98,6 @@ def str_list_to_float_list(data):
     for i, val in enumerate(data):
         data[i] = float(val)
     return data
+
+
+# def w_sensor_list(patient_seq):

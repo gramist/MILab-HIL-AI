@@ -315,6 +315,49 @@ def get_today_schedule(patient_seq):
     return data
 
 
+def set_today_schedule(patient_seq, time, content):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'insert into  today_schedule(patient_seq, time, content) value (%s, %s, %s)'
+        cursor.execute(sql, (patient_seq, time, content))
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-DELETE ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+
+def del_today_schedule(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'delete from today_schedule where patient_seq=%s'
+        cursor.execute(sql, patient_seq)
+
+        cursor.fetchone()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-DELETE ERROR] : ', e)
+        return False
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return True
+
+
 def get_past_schedule(patient_seq):
     try:
         conn = getConnection()
@@ -337,6 +380,73 @@ def get_past_schedule(patient_seq):
     return data
 
 
+def get_w_sensor(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'SELECT sensor_log_time, sensor_idk from w_sensor_log where patient_seq=%s and ' \
+              'created_time > curdate() order by sensor_log_time;'
+        cursor.execute(sql, patient_seq)
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-DELETE ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
+def get_w_sensor_patient_seq():
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'select distinct patient_seq from w_sensor_log where created_time > curdate()'
+        cursor.execute(sql)
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-DELETE ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
+def get_w_sensor_idk_time(time1, time2, patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'select sensor_idk from w_sensor_log where (sensor_log_time between %s and %s ) and patient_seq=%s'
+        cursor.execute(sql, (time1, time2, patient_seq))
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-DELETE ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
 def run_sql_hard_code(sql):
     try:
         conn = getConnection()
@@ -344,7 +454,7 @@ def run_sql_hard_code(sql):
         cursor = conn.cursor()
         cursor.execute(sql)
 
-        data = cursor.fetchone()
+        cursor.fetchone()
 
     except Exception as e:
         conn.rollback()
