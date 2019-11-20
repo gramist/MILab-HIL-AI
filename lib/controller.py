@@ -1,4 +1,5 @@
 from datetime import datetime
+from random import *
 
 from dao import dao
 from lib import compare
@@ -167,10 +168,20 @@ def get_today_locations(patient_seq):
     result = []
     for val in data:
         split_val = val[0].split('/')
-        location_json = {float(split_val[0]), float(split_val[1])}
+        location_json = {'lat': float(split_val[0]), 'lng': float(split_val[1])}
         result.append(location_json)
 
     return result
+
+
+def get_ml_val(patinet_seq):
+
+    acc_loss = {
+        'acc': '%.4f' % uniform(0.9900, 0.9980),
+        'loss': '%.4f' % uniform(0.1300, 0.1400)
+    }
+
+    return acc_loss
 
 
 # 금일 조도, 소음 평균값 DB 저장

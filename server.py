@@ -78,6 +78,12 @@ def schedule(patient_seq):
                            pagination=pagination)
 
 
+@app.route('/ml/<patient_seq>')
+def ml_page(patient_seq):
+    acc_loss = controller.get_ml_val(patient_seq)
+    return render_template('ml_page.html', acc_loss=acc_loss)
+
+
 @app.route('/foo', methods=['GET', 'POST'])
 def foo():
     if not request.json:
