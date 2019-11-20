@@ -3,6 +3,7 @@ from datetime import datetime
 from dao import dao
 from lib import compare
 from lib import parser
+from lib import processData
 from lib.fileIO import FileIO
 from lib.requestData import requestData
 
@@ -35,6 +36,129 @@ def abnormal_checker(request, result, process, learner):
                 request.json['PatientSeq']
             )
             requestData().postData(obj)
+
+
+def set_ai_schedule_data(patient_seq, process, learner):
+    batch = process.process(patient_seq)
+    schedule_data = learner.make_schedule(batch)
+
+    sensorActionD = {1: "화장실 이용", 2: "냉장고 이용", 3: "식사 시간", 4: "외출 시간", 5: "방문 열림", 6: "약 복용 시간", 7: "기타"}
+
+    tmp = []
+    for i, log in enumerate(schedule_data):
+        h = log[0]
+        m = log[1]
+        s = log[2]
+
+        log_ = [h, m, s]
+        tmp.append(log_)
+
+    sch = set(map(tuple, tmp))
+    sch_l = sorted(list(sch))
+
+    result_list = []
+    tmp = ['', '', '']
+    cnt = 0
+    for l in sch_l:
+        str_data = "%02d:%02d, %s" % (l[0], l[1], sensorActionD[l[2]])
+        tmp[cnt] = sensorActionD[l[2]]
+
+        cnt += 1
+        if cnt == 3:
+            cnt = 0
+
+        result_list.append(str_data)
+
+    # After_Process ############
+    schedule_df = processData.after_process(result_list)
+
+    # insert today_schedule table  ############
+    dao.del_today_schedule(patient_seq)
+
+    my_str = ''
+    for schedule in schedule_df:
+        dao.set_today_schedule(patient_seq, schedule[0], schedule[1])
+        my_str += schedule[0] + '-' + schedule[1] + '/'
+
+    now = datetime.now()
+    now = '%s-%s-%s %s:%s:%s' % (now.year, now.month, now.day, now.hour, now.minute, now.second)
+
+    obj = parser.make_requestObj(
+        'EstimatedSchedule',
+        my_str[:-1],
+        now,
+        patient_seq
+    )
+    requestData().postData(obj)
+
+
+def all_user_insert_today_schedule(process, learner):
+    get_data = dao.get_w_sensor_patient_seq()
+    for seq in get_data:
+        set_ai_schedule_data(int(seq[0]), process, learner)
+
+
+def chk_past_schedule(patient_seq):
+
+    schedule_dict = {
+        '기상': [1, 5],
+        '아침식사,위생관리': [1, 2, 3],
+        '건강체크,물리치료': [1, 5],
+        '휴식 및 여가활동': [4, 5],
+        '점심식사,위생관리,투약': [1, 2, 3, 6],
+        '산책 및 휴식': [4, 5],
+        '저녁식사,위생관리,투약': [1, 2, 3, 6],
+        '수면환경 점검': [1, 5]
+    }
+    behavior_dict = {
+        '화장실': 1,
+        '냉장고': 2,
+        '식사': 3,
+        '외출': 4,
+        '취침 및 문 열기': 5,
+        '투약': 6
+    }
+
+    get_data = dao.get_today_schedule(patient_seq)
+
+    now = datetime.now()
+    now_str = '%s-%s-%s %s:%s:%s' % (now.year, now.month, now.day, now.hour, now.minute, now.second)
+
+    compare_list = []
+    for row in get_data:
+        tmp_arr = row[0].split('~')
+        split_time = now_str.split(' ')
+        split_arr = []
+
+        for val in tmp_arr:
+            split_arr.append(datetime.strptime(split_time[0] + ' ' + val + ':00', '%Y-%m-%d %H:%M:%S'))
+        compare_list.append(split_arr)
+    # print(compare_list)
+    for i, time_data in enumerate(compare_list):
+        if time_data[0] <= now <= time_data[1]:
+            sensor_list = dao.get_w_sensor_idk_time(time_data[0], time_data[1], patient_seq)
+            behavior_list = schedule_dict[get_data[i][1]]
+            flag = True
+            for sensor in sensor_list:
+                if (int(sensor[0]) not in behavior_list) and flag:
+                    flag = False
+            if flag is False:
+                obj = parser.make_requestObj(
+                    'PastSchedule',
+                    get_data[i][1] + '을/를 하지 않았습니다.',
+                    now_str,
+                    patient_seq
+                )
+                requestData().postData(obj)
+                return
+
+    return get_data
+
+
+def all_user_chk_past_schedule():
+    get_data = dao.get_w_sensor_patient_seq()
+    for seq in get_data:
+        chk_past_schedule(int(seq[0]))
 
 
 def get_today_locations(patient_seq):
@@ -241,3 +365,37 @@ def get_abnormal_week(patient_seq):
                 result.append(json_data)
 
     return result
+
+
+def get_sensor_list(patient_seq):
+    get_data = dao.get_w_sensor(patient_seq)
+
+    result = []
+    for i, row in enumerate(get_data):
+        sensor_count = 0
+        if i == 0:
+            sensor_count = 1
+        else:
+            flag = True
+            for result_list in result:
+                if (row[1] == result_list[2]) and (sensor_count <= int(result_list[3])):
+                    sensor_count = int(result_list[3]) + 1
+                    flag = False
+            if flag:
+                sensor_count = 1
+
+        list_data = str(row[0]).split(' ')
+        list_data.append(row[1])
+        list_data.append(str(sensor_count))
+
+        result.append(list_data)
+
+    return result
+
+
+def get_sensor_cnt_list(get_data):
+    arr = []
+    for data in get_data:
+        arr.append(int(data[3]))
+
+    return arr

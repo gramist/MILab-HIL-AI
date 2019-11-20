@@ -1,6 +1,71 @@
 import os
+import datetime
 
-import pandas as pd
+import numpy as np
+from pandas import DataFrame
+
+from lib import controller
+
+
+def after_process(schedule_list):
+
+    after_list = []
+    for row in schedule_list:
+        split_data = row.split(', ')
+
+        time_str = '2019-01-01 ' + split_data[0] + ':00'
+        row_time = datetime.datetime.strptime(time_str, '%Y-%m-%d %H:%M:%S')
+        times = [
+            '2019-01-01 06:00:00',
+            '2019-01-01 07:00:00',
+            '2019-01-01 07:20:00',
+            '2019-01-01 08:30:00',
+            '2019-01-01 10:00:00',
+            '2019-01-01 12:30:00',
+            '2019-01-01 13:30:00',
+            '2019-01-01 17:00:00',
+            '2019-01-01 18:30:00',
+            '2019-01-01 20:00:00',
+            '2019-01-01 22:00:00'
+        ]
+
+        for i, val in enumerate(times):
+            times[i] = datetime.datetime.strptime(val, '%Y-%m-%d %H:%M:%S')
+
+        if times[0] <= row_time <= times[1]:
+            if (split_data[1] == '방문 열림') or (split_data[1] == '화장실 이용'):
+                after_list.append(['06:00~07:00', '기상'])
+        elif times[2] <= row_time <= times[3]:
+            if (split_data[1] == '냉장고 이용') or (split_data[1] == '식사 시간') or (split_data[1] == '화장실 이용'):
+                after_list.append(['07:00~08:30', '아침식사,위생관리'])
+        elif times[3] <= row_time <= times[4]:
+            if (split_data[1] == '방문 열림') or (split_data[1] == '화장실 이용'):
+                after_list.append(['08:30~10:00', '건강체크,물리치료'])
+        elif times[4] <= row_time <= times[5]:
+            if (split_data[1] == '외출 시간') or (split_data[1] == '방문 열림'):
+                after_list.append(['10:00~12:30', '휴식 및 여가활동'])
+        elif times[5] <= row_time <= times[6]:
+            if (split_data[1] == '화장실 이용') or (split_data[1] == '냉장고 이용') or \
+                    (split_data[1] == '식사 시간') or (split_data[1] == '약 복용 시간'):
+                after_list.append(['12:30~13:30', '점심식사,위생관리,투약'])
+        elif times[6] <= row_time <= times[7]:
+            if (split_data[1] == '외출 시간') or (split_data[1] == '방문 열림'):
+                after_list.append(['13:30~17:00', '산책 및 휴식'])
+        elif times[7] <= row_time <= times[8]:
+            if (split_data[1] == '화장실 이용') or (split_data[1] == '냉장고 이용') or \
+                    (split_data[1] == '식사 시간') or (split_data[1] == '약 복용 시간'):
+                after_list.append(['17:00~18:30', '저녁식사,위생관리,투약'])
+        elif times[8] <= row_time <= times[9]:
+            if (split_data[1] == '외출 시간') or (split_data[1] == '방문 열림'):
+                after_list.append(['18:30~20:00', '휴식 및 여가활동'])
+        elif times[9] <= row_time <= times[10]:
+            if (split_data[1] == '방문 열림') or (split_data[1] == '화장실 이용'):
+                after_list.append(['20:00~22:00', '수면환경 점검'])
+
+    tmp = np.array(after_list)
+    after_list = DataFrame(tmp).drop_duplicates().values
+
+    return after_list
 
 
 class Preprocess:
@@ -30,6 +95,7 @@ class Preprocess:
                 os.mkdir(self.inputDir)
 
         # self.main()
+
     def num2onehot(self, nCate, n):
         onehot = []
         for i in range(nCate):
@@ -64,38 +130,17 @@ class Preprocess:
 
         return newData
 
-    def process(self):
-        # print(self.data)
-        for file in self.data:
-            # print(file, self.dir)
-            # fileD = self.dir + file
-            # print(fileD)
-            rData = pd.read_csv(self.dir + file, header=None)
-            # rData = open(dir + data[i], 'r')
-            wData = open(self.inputDir + 'inputN' + file[1:], 'w', newline='')
-            writer = csv.writer(wData)
+    def process(self, patient_seq):
+        get_data = controller.get_sensor_list(patient_seq)
+        cnt_list = controller.get_sensor_cnt_list(get_data)
 
-            # hashs = rData[3]
-            # self.standardization(rData[3])
-            self.normalization(rData[3])
+        self.normalization(cnt_list)
 
-            for i, log in rData.iterrows():
-                # data = row.split(',')
+        result_list = []
+        for i, log in enumerate(get_data):
+            log[2] = int(log[2])
+            log[3] = int(log[3])
+            newData = self.log2onehot(log)
+            result_list.append(newData)
 
-                h, m, _ = log[1].split(':')
-                m = int(m) // 10 + 1
-
-                newData = self.num2onehot(self.hour, h)      # [0:24]
-                newData += self.num2onehot(self.minute, m)   # [24:30]
-                newData += self.num2onehot(self.nSensor, log[2])    # [30:36]
-
-                # normalization
-                norm = (log[3] - self.min) / (self.max - self.min)
-                newData.append(norm) # [35]
-
-                if self.option == 2:
-                    newData += self.num2onehot(self.nLabel, log[4]+1)
-
-                writer.writerows([newData])
-
-        return self.max, self.min
+        return result_list
