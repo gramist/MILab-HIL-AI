@@ -31,20 +31,7 @@
 </head>
 
 <body>
-  <script>
-    window.onload = function(){
-      var get_data = {{index|tojson|safe}}
-      max = 0
 
-      for (var i in get_data){
-        if (max < get_data[i].per){
-          max = get_data[i].per
-        }
-      }
-      max += 15
-      max = (parseInt(max/10)) * 10
-    }
-  </script>
   <section id="container">
     <!--main content start-->
     <section id="main-content">
@@ -60,18 +47,18 @@
               </div>
               <div class="custom-bar-chart">
                 <ul class="y-axis" id="y-axis">
-                  <li><span>50</span></li>
+                  <li><span>100</span></li>
+                  <li><span>80</span></li>
+                  <li><span>60</span></li>
                   <li><span>40</span></li>
-                  <li><span>30</span></li>
                   <li><span>20</span></li>
-                  <li><span>10</span></li>
                   <li><span>0</span></li>
                 </ul>
                 {% block content %}
                 {% for index in index %}
                 <div class="bar">
                   <div class="title">{{index.name}}</div>
-                  <div class="value tooltips" data-original-title="{{index.per}}" data-toggle="tooltip" data-placement="top">{{index.per/50*100}}%</div>
+                  <div class="value tooltips" data-original-title="{{index.per}}" data-toggle="tooltip" data-placement="top">{{index.per}}</div>
                 </div>
                 {% endfor %}
                 {% endblock %}
@@ -186,7 +173,6 @@
     <!--footer start-->
     <footer class="site-footer">
       <div class="text-center">
-        세종대학교 병원
         <a href="index.html#" class="go-top">
           <i class="fa fa-angle-up"></i>
         </a>
