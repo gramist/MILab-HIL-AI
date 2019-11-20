@@ -33,7 +33,7 @@
 				mapTypeId: 'roadmap'
 			};
 			var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-            const roadTripCoordinates = {{ location_list|safe }};
+            var roadTripCoordinates = [{lat: 37.755430, 'ing': '127.036502'}, {'lat': '47.755430', 'ing': '157.036502'}];
 			var roadTrip = new google.maps.Polyline({
 				path: roadTripCoordinates,
 				strokeColor: '#FF0000',

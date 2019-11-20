@@ -90,7 +90,6 @@ def foo():
     result = parser.json_parser(request.json)
     if type(result) == str:
         controller.abnormal_checker(request, result, process, learner)
-        controller.chk_past_schedule(result)
     elif type(result) == dict:
         controller.chk_all(result)
 

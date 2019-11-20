@@ -167,7 +167,7 @@ def get_today_locations(patient_seq):
     result = []
     for val in data:
         split_val = val[0].split('/')
-        location_json = {'lat': split_val[0], 'ing': split_val[1]}
+        location_json = {float(split_val[0]), float(split_val[1])}
         result.append(location_json)
 
     return result
