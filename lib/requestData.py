@@ -1,4 +1,6 @@
 import requests
+import json
+
 from lib.fileIO import FileIO
 
 
@@ -20,9 +22,9 @@ class requestData:
                 packet_type = 'outdoorsensing'
 
             url = self.url + '/api/ai/' + packet_type
-            response = requests.post(url, data=data)
+            response = requests.post(url, json=data)
 
         except Exception as e:
             print('[Request ERROR]\n', e)
         finally:
-            print('postData result : ', response)
+            print('postData result : ', response.status_code)

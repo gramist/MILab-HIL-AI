@@ -62,8 +62,9 @@ def table3(patient_seq):
 
 @app.route('/map/<patient_seq>')
 def map(patient_seq):
+    first_location= controller.get_patient_first_location(patient_seq)
     location_list = controller.get_today_locations(patient_seq)
-    return render_template("Hil_map.html", location_list=location_list)
+    return render_template("Hil_map.html", first_location=first_location, location_list=location_list)
 
 
 # 스케줄 상세사항
@@ -112,11 +113,4 @@ if __name__ == '__main__':
     # 모든 유저들의 스케줄을 참조하여 하지 않은 일 알림
     timeSchedule.run_interval_scheduler(controller.all_user_chk_past_schedule, 1)
 
-    # timeSchedule.run_scheduler(학습_함수, 23, 00) 이건 테스트 종료하고 제일 나중에 만들자....
-
     app.run(host=server_info['IP'], port=server_info['Port'], threaded=False)
-    # app.run(host=server_info['IP'], port=server_info['Port'], debug=True, use_reloader=False)
-
-# curl -i -H "Content-Type: application/json" -X POST -d "{\"PacketType\": \"SensorLog\", \"PatientSeq\": 37,
-# \"SensorIdk\": \"A2:22:44:55:22:11\", \"SensorCode\": 3, \"SensorCount\": 16, \"LogTime\": \"2019-08-25 1:16:30\"}"
-# 127.0.0.1:5000/foo

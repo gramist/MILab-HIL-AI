@@ -27,9 +27,10 @@
 	</style>
     <script>
 		function initMap() {
+		    var firstLocation = {{ first_location.location|safe }}
 			var mapOptions = {
 				zoom: 14,
-				center: new google.maps.LatLng(37.5510, 127.0757),
+				center: new google.maps.LatLng(firstLocation[0], firstLocation[1]),
 				mapTypeId: 'roadmap'
 			};
 			var map = new google.maps.Map(document.getElementById('map'), mapOptions);
@@ -68,7 +69,6 @@
       <!-- 페이징 그리기 -->
       <footer class="site-footer">
           <div class="text-center">
-              세종대학교 병원
           </div>
       </footer>
       <!--footer end-->
