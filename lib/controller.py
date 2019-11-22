@@ -413,13 +413,13 @@ def get_sensor_cnt_list(get_data):
 
 
 def get_patient_first_location(patient_seq):
-    p_loc = dao.get_patient_location(patient_seq)
+    p_loc = dao.get_patient_location_from_outdoor_log(patient_seq)
     if p_loc:
-        p_loc = p_loc[0].split('/')
+        p_loc = p_loc[len(p_loc) - 1][0].split('/')
     else:
-        p_loc = dao.get_patient_location_from_outdoor_log(patient_seq)
+        p_loc = dao.get_patient_location(patient_seq)
         if p_loc:
-            p_loc = p_loc[len(p_loc) - 1][0].split('/')
+            p_loc = p_loc[0].split('/')
         else:
             p_loc = [36.502449, 127.262210]
 
