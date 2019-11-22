@@ -320,7 +320,7 @@ def get_today_schedule(patient_seq):
 
     result = []
     for row in get_data:
-        json_data = {'time': now + ' / ' + row[0], 'name': row[1]}
+        json_data = {'time': row[0], 'name': row[1]}
         result.append(json_data)
 
     return result

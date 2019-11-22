@@ -20,6 +20,7 @@ def get_paging(data, offset=0, per_page=10):
 
 @app.route('/<patient_seq>')
 def main(patient_seq):
+    get_row = 5
     index = controller.get_abnormal_week(patient_seq)
     return render_template("Hil_index.html", index=index)
 
