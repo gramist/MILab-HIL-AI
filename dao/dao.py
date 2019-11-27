@@ -385,7 +385,7 @@ def get_w_sensor(patient_seq):
         conn = getConnection()
 
         cursor = conn.cursor()
-        sql = 'SELECT SENSOR_LOG_TIME, SENSOR_IDK from W_SENSOR_LOG where PATIENT_SEQ=%s and ' \
+        sql = 'SELECT SENSOR_LOG_TIME, SENSOR_CODE from W_SENSOR_LOG where PATIENT_SEQ=%s and ' \
               'CREATED_TIME > curdate() order by SENSOR_LOG_TIME;'
         cursor.execute(sql, patient_seq)
 
@@ -430,7 +430,7 @@ def get_w_sensor_idk_time(time1, time2, patient_seq):
         conn = getConnection()
 
         cursor = conn.cursor()
-        sql = 'select SENSOR_IDK from W_SENSOR_LOG where (SENSOR_LOG_TIME between %s and %s ) and PATIENT_SEQ=%s'
+        sql = 'select SENSOR_CODE from W_SENSOR_LOG where (SENSOR_LOG_TIME between %s and %s ) and PATIENT_SEQ=%s'
         cursor.execute(sql, (time1, time2, patient_seq))
 
         data = cursor.fetchall()

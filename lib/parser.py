@@ -72,7 +72,6 @@ def make_requestObj(packet_type, packet_content, time, patient_seq):
         'Time': time,
         'PatientSeq': patient_seq
     }
-    result = json.dumps(result, ensure_ascii=False)
 
     return result
 

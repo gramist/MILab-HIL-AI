@@ -29,7 +29,7 @@ def abnormal_checker(request, result, process, learner):
         status = learner.getStatus(batch)
 
         print('status : ', status)
-        if status is not None:
+        if status:
             obj = parser.make_requestObj(
                 'AbnormalBehavior',
                 status,
