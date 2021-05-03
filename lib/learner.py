@@ -1,7 +1,8 @@
+import os
 import traceback
 
 import numpy as np
-from keras.models import model_from_json
+from tensorflow.keras.models import model_from_json
 
 from lib.processData import Preprocess
 
@@ -15,7 +16,7 @@ class Learner:
     def __init__(self, max_val, C, total_acc, total_loss, count):
         try:
             process = Preprocess(nor_max=max_val)
-
+            print(os.getcwd())
             # Autoencoder Model load
             json_file = open('./model_ae/model%d.json' % C, 'r')
             loaded_ae_json = json_file.read()
@@ -25,7 +26,7 @@ class Learner:
             ae_model.load_weights("./model_ae/model%d.h5" % C)
             print("Loaded Autoencoder model from disk")
 
-            ae_model.compile(loss='binary_crossentropy', optimizer='adadelta',
+            ae_model.compile(loss='binary_crossentropy', optimizer='adam',
                              metrics=['accuracy'])
 
             # LSTM Model Load
@@ -42,9 +43,9 @@ class Learner:
 
             # Vae Model load
             json_file = open('./model_vae/model%d.json' % C, 'r')
-            loaded_ae_json = json_file.read()
+            loaded_vae_json = json_file.read()
             json_file.close()
-            vae_model = model_from_json(loaded_ae_json)
+            vae_model = model_from_json(loaded_vae_json)
             # load weights into new model
             vae_model.load_weights("./model_vae/model%d.h5" % C)
             print("Loaded Vae model from disk")

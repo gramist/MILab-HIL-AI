@@ -73,7 +73,7 @@ class Preprocess:
                  nor_max=0, nor_min=1):
         self.hour = 24
         self.minute = 6
-        self.nSensor = 7
+        self.nSensor = 11
         self.nLabel = 3
 
         self.data_len = len_
