@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Dashboard">
+    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+
+    <title>건강상태 관찰</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{url_for('static',filename='css/bootstrap.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <!-- external css -->
+    <link href="{{url_for('static',filename='font-awesome/css/font-awesome.css')}}" rel="stylesheet" />
+
+    <!-- Custom styles for this templates -->
+    <link href="{{url_for('static',filename='css/style.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='css/style-responsive.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='css/table-responsive.css')}}" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    </head>
+
+
+  <body>
+    <div class="container">
+      <div class="row mt-5"></div>
+      <h3><i class="fa fa-angle-right"></i>최신 건강상태</h3>
+      <div class="table-responsive">
+          <div class="row mt">
+            <div class="col-lg-12">
+              <div class="content-panel">
+                <div class="row">
+                  <div class="form-group col-12">
+                    <h4><i class="fa"></i>식전 유무</h4>
+                    <div class="col-sm-10">
+                      <input type="radio" name="meal_yn" id="meal_yn0" value="0" disabled
+                             {% if p_health_info[4] == '식전' %} checked {% endif %}>
+                      식전
+                      <input type="radio" name="meal_yn" id="meal_yn1" value="1" disabled
+                             {% if p_health_info[4] == '식후' %} checked {% endif %}>
+                      식후
+                    </div>
+                  </div>
+                  <div class="form-group col-12">
+                    <h4><i class="fa"></i>혈압</h4>
+                    <h4>{{ p_health_info[2] }} <br>
+                      {{ p_health_info[3] }}</h4>
+                  </div>
+                  <div class="form-group col-12">
+                    <h4><i class="fa"></i>혈당</h4>
+                    <h4>{{ p_health_info[5] }}</h4>
+                  </div>
+                  <div class="form-group col-12">
+                    <h4><i class="fa"></i>청취 능력</h4>
+                    <div class="col-sm-10">
+                      <input type="radio" name="hearing_score" id="hearing_score1" value="1" disabled
+                             {% if p_health_info[6] == '1' %} checked {% endif %}> 들리는지 판단불능
+                      <input type="radio" name="hearing_score" id="hearing_score2" value="2" disabled
+                             {% if p_health_info[6] == '2' %} checked {% endif %}> 거의 들리지 않는다<br>
+                      <input type="radio" name="hearing_score" id="hearing_score3" value="3" disabled
+                             {% if p_health_info[6] == '3' %} checked {% endif %}> 큰소리는 들을 수 있다 <br>
+                      <input type="radio" name="hearing_score" id="hearing_score4" value="4" disabled
+                             {% if p_health_info[6] == '4' %} checked {% endif %}> 보통의 소리를 듣기는 하고, 못 듣기도 한다 <br>
+                      <input type="radio" name="hearing_score" id="hearing_score5" value="5" disabled
+                             {% if p_health_info[6] == '5' %} checked {% endif %}>정상(보청기 사용 포함)
+                    </div>
+                  </div>
+                  <div class="form-group col-12">
+                    <h4><i class="fa"></i>의사소통</h4>
+                    <div class="col-sm-10">
+                      <input type="radio" name="comm_score" id="comm_score1" value="1" disabled
+                             {% if p_health_info[7] == '1' %} checked {% endif %}> 모두이해하고 의사를 표현한다<br>
+                      <input type="radio" name="comm_score" id="comm_score2" value="2" disabled
+                             {% if p_health_info[7] == '2' %} checked {% endif %}> 대부분 이해하고 의사를 표현한다<br>
+                      <input type="radio" name="comm_score" id="comm_score3" value="3" disabled
+                             {% if p_health_info[7] == '3' %} checked {% endif %}> 가끔이해하고 의사를 표현한다<br>
+                      <input type="radio" name="comm_score" id="comm_score4" value="4" disabled
+                             {% if p_health_info[7] == '4' %} checked {% endif %}> 정상
+                    </div>
+                  </div>
+                  <div class="form-group col-12">
+                    <h4><i class="fa"></i>발음능력</h4>
+                    <div class="col-sm-10">
+                      <input type="radio" name="pron_score" id="pron_score1" value="1" disabled
+                             {% if p_health_info[8] == '1' %} checked {% endif %}> 발음능력1<br>
+                      <input type="radio" name="pron_score" id="pron_score2" value="2" disabled
+                             {% if p_health_info[8] == '2' %} checked {% endif %}> 발음능력2<br>
+                      <input type="radio" name="pron_score" id="pron_score3" value="3" disabled
+                             {% if p_health_info[8] == '3' %} checked {% endif %}> 발음능력3<br>
+                      <input type="radio" name="pron_score" id="pron_score4" value="4" disabled
+                             {% if p_health_info[8] == '4' %} checked {% endif %}> 정상
+                    </div>
+                  </div>
+                  <div class="form-group col-12">
+                    <h4><i class="fa"></i>상처 발생 여부</h4>
+                    <div class="col-sm-10">
+                      <input type="radio" name="scratch_yn" id="scratch_yn0" value="1" disabled
+                             {% if p_health_info[9] == 'N' %} checked {% endif %}> 정상<br>
+                      <input type="radio" name="scratch_yn" id="scratch_yn1" value="2" disabled
+                             {% if p_health_info[9] == 'Y' %} checked {% endif %}> 관찰필요<br>
+                    </div>
+                  </div>
+                </div>
+             </div>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="text-center">
+      </div>
+    </footer>
+    <!--footer end-->
+
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script src="{{url_for('static',filename='js/jquery.js')}}"></script>
+    <script src="{{url_for('static',filename='js/bootstrap.min.js')}}"></script>
+    <script class="include" type="text/javascript" src="{{url_for('static',filename='js/jquery.dcjqaccordion.2.7.js')}}"></script>
+    <script src="{{url_for('static',filename='js/jquery.scrollTo.min.js')}}"></script>
+    <script src="{{url_for('static',filename='js/jquery.nicescroll.js')}}" type="text/javascript"></script>
+
+    <!--common script for all pages-->
+    <script src="{{url_for('static',filename='js/common-scripts.js')}}"></script>
+
+    <!--script for this page-->
+    <script type="text/javascript" src="{{url_for('static',filename='js/table.js')}}"></script>
+    <script src="{{url_for('static',filename='js/chart-master/Chart.js')}}"></script>
+
+  </body>
+</html>
+
+
+
+
+
+
+
+
+

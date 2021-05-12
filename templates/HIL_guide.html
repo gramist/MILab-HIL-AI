@@ -34,67 +34,126 @@
                     <h4><i class="fa fa-angle-right"></i>관찰 의견</h4>
                     <br><br>
                     <h4><i class="fa fa-angle-right"></i>기본 관찰 의견</h4>
-                    <input class="form-control" id="basic_opinion" type="text" placeholder="Disabled input here..."
-                           disabled>
+                    <input class="form-control" id="basic_opinion" type="text" placeholder="{{ g_opinion }}" disabled>
                     <h4><i class="fa fa-angle-right"></i>요양보호사 관찰 의견</h4>
-                    <input class="form-control" id="medic_opinion" type="text" placeholder="Disabled input here..."
-                           disabled>
+                    <input class="form-control" id="medic_opinion" type="text" placeholder="{{ g_opinion }}" disabled>
                     <br><br><br>
                     <h4><i class="fa fa-angle-right"></i>환자 건강 정보</h4>
-                    <div class="form-group">
-                        <label class="col-sm-2 col-sm-2 control-label">신체 상태</label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-theme">정상</button>
+                    <div class="row">
+                        <div class="form-group col-12">
+                            <label class="col-sm-2 col-3 control-label">신체 상태</label>
+                            <div class="col-sm-10 col-8 d-inline-block">
+                                <button class="btn btn-theme" onclick="move('{{url_for('detailcon', _type='bodycon', patient_seq=patient_seq)}}')">
+                                    {{p_health_info['rs_bodycon']}}
+                                </button>
+                            </div>
                         </div>
-                        <label class="col-sm-2 col-sm-2 control-label">건강 상태</label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-theme">관찰 필요</button>
+                        <div class="form-group col-12">
+                            <label class="col-sm-2 col-3 control-label">건강 상태</label>
+                            <div class="col-sm-10 col-8 d-inline-block">
+                                <button class="btn btn-theme" onclick="move('{{url_for('healthcon', patient_seq=patient_seq)}}')">
+                                    상세보기
+                                </button>
+                            </div>
                         </div>
-                        <label class="col-sm-2 col-sm-2 control-label">청결 상태</label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-theme">정상</button>
+                        <div class="form-group col-12">
+                            <label class="col-sm-2 col-3 control-label">청결 상태</label>
+                            <div class="col-sm-10 col-8 d-inline-block">
+                                <button class="btn btn-theme" onclick="move('{{url_for('detailcon', _type='cleancon', patient_seq=patient_seq)}}')">
+                                    {{p_health_info['rs_clean']}}
+                                </button>
+                            </div>
                         </div>
-                        <label class="col-sm-2 col-sm-2 control-label">낙상 위험도</label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-theme">정상</button>
+                        <div class="form-group col-12">
+                            <label class="col-sm-2 col-3 control-label">낙상 위험도</label>
+                            <div class="col-sm-10 col-8 d-inline-block">
+                                <button class="btn btn-{%if p_health_info['rs_fallcon'] == '낮음' %}theme{%else%}danger{%endif%}"
+                                        onclick="move('{{url_for('detailcon', _type='fallcon', patient_seq=patient_seq)}}')">
+                                    {{p_health_info['rs_fallcon']}}
+                                </button>
+                            </div>
                         </div>
-                        <label class="col-sm-2 col-sm-2 control-label">인지기능 상태</label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-theme">정상</button>
+                        <div class="form-group col-12">
+
+                            <label class="col-sm-2 col-3 control-label">인지기능 상태</label>
+                            <div class="col-sm-10 col-8 d-inline-block">
+                                <button class="btn btn-{%if p_health_info['rs_cog'] == '정상' %}theme{%else%}danger{%endif%}"
+                                        onclick="move('{{url_for('detailcon', _type='cognicon', patient_seq=patient_seq)}}')">
+                                    {{p_health_info['rs_cog']}}
+                                </button>
+                            </div>
                         </div>
-                        <label class="col-sm-2 col-sm-2 control-label">욕창 위험도</label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-theme">정상</button>
+                        <div class="form-group col-12">
+                            <label class="col-sm-2 col-3 control-label">욕창 위험도</label>
+                            <div class="col-sm-10 col-8 d-inline-block">
+                                <button class="btn btn-{%if p_health_info['rs_dec'] == '위험 없음' %}theme{%else%}danger{%endif%}"
+                                        onclick="move('{{url_for('detailcon', _type='decubcon', patient_seq=patient_seq)}}')">
+                                    {{p_health_info['rs_dec']}}
+                                </button>
+                            </div>
                         </div>
-                        <label class="col-sm-2 col-sm-2 control-label">혈당</label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-theme">정상</button>
+                        <div class="form-group col-12">
+                            <label class="col-sm-2 col-3 control-label">혈당</label>
+                            <div class="col-sm-10 col-8 d-inline-block">
+                                <button class="btn btn-{%if p_health_info['rs_bloodsugar'] == '정상' %}theme{%else%}danger{%endif%}"
+                                        onclick="move('{{url_for('health_recent', patient_seq=patient_seq)}}')">
+                                    {{p_health_info['rs_bloodsugar']}}
+                                </button>
+                            </div>
                         </div>
-                        <label class="col-sm-2 col-sm-2 control-label">혈압</label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-theme">정상</button>
+                        <div class="form-group col-12">
+
+                            <label class="col-sm-2 col-3 control-label">혈압</label>
+                            <div class="col-sm-10 col-8 d-inline-block">
+                                <button class="btn btn-{%if p_health_info['rs_bloodpress'] == '정상' %}theme{%else%}danger{%endif%}"
+                                        onclick="move('{{url_for('health_recent', patient_seq=patient_seq)}}')">
+                                    {{p_health_info['rs_bloodpress']}}
+                                </button>
+                            </div>
                         </div>
-                        <label class="col-sm-2 col-sm-2 control-label">청취 능력</label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-theme">정상</button>
+                        <div class="form-group col-12">
+                            <label class="col-sm-2 col-3 control-label">청취 능력</label>
+                            <div class="col-sm-10 col-8 d-inline-block">
+                                <button class="btn btn-theme" onclick="move('{{url_for('health_recent', patient_seq=patient_seq)}}')">
+                                    {{p_health_info['rs_hearing']}}
+                                </button>
+                            </div>
                         </div>
-                        <label class="col-sm-2 col-sm-2 control-label">의사소통</label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-theme">정상</button>
+                        <div class="form-group col-12">
+                            <label class="col-sm-2 col-3 control-label">의사소통</label>
+                            <div class="col-sm-10 col-8 d-inline-block">
+                                <button class="btn btn-theme" onclick="move('{{url_for('health_recent', patient_seq=patient_seq)}}')">
+                                    {{p_health_info['rs_comm']}}
+                                </button>
+                            </div>
                         </div>
-                        <label class="col-sm-2 col-sm-2 control-label">발음 능력</label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-theme">정상</button>
+                        <div class="form-group col-12">
+                            <label class="col-sm-2 col-3 control-label">발음 능력</label>
+                            <div class="col-sm-10 col-8 d-inline-block">
+                                <button class="btn btn-theme" onclick="move('{{url_for('health_recent', patient_seq=patient_seq)}}')">
+                                    {{p_health_info['rs_pron']}}
+                                </button>
+                            </div>
                         </div>
-                        <label class="col-sm-2 col-sm-2 control-label">상태 발생 여부</label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-theme">정상</button>
+                        <div class="form-group col-12">
+                            <label class="col-sm-2 col-3 control-label">상처 발생 여부</label>
+                            <div class="col-sm-10 col-8 d-inline-block">
+                                <button class="btn btn-{%if p_health_info['rs_scratch_yn'] == 0 %}theme{%else%}danger{%endif%}"
+                                        onclick="move('{{url_for('health_recent', patient_seq=patient_seq)}}')">
+                                    {%if p_health_info['rs_scratch_yn'] == 0 %}
+                                    정상
+                                    {% else %}
+                                    관찰 필요
+                                    {% endif %}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <footer class="site-footer">
@@ -103,7 +162,12 @@
 </footer>
 <!--footer end-->
 </section>
-
+<script>
+    function move(url)
+    {
+        location.href=url;
+    }
+</script>
 <!-- js placed at the end of the document so the pages load faster -->
 <script src="{{ url_for('static',filename='js/jquery.js') }}"></script>
 <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>

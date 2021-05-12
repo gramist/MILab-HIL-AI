@@ -428,3 +428,56 @@ def get_patient_first_location(patient_seq):
     }
 
     return first_location
+
+# Guideline START
+def get_guide_opinion(patient_seq):
+    g_opinion = dao.get_guide_opinion(patient_seq)[2]
+    return g_opinion
+
+def get_guide_scores(patient_seq):
+    g_cognicon = dao.get_cognicon_score(patient_seq)[2]
+    p_health_info = {}
+
+    if g_cognicon >= 24:
+        p_health_info['rs_cog'] = '정상' # 정상
+    elif 20 <= g_cognicon < 24:
+        p_health_info['rs_cog'] = '치매의심' # 치매의심
+    else:
+        p_health_info['rs_cog'] = '치매' # 치매
+
+    p_health_info['rs_fallcon'] = dao.get_fallcon_score(patient_seq)[4]
+    p_health_info['rs_dec'] = dao.get_decub_score(patient_seq)[4]
+    p_health_info['rs_bloodsugar'] = dao.get_bloodsugar(patient_seq)[4]
+    p_health_info['rs_bloodpress'] = dao.get_bloodpress(patient_seq)[4]
+    # p_health_info['rs_debu_yn'] = dao.get_debu_yn(patient_seq)[2]
+    p_health_info['rs_scratch_yn'] = dao.get_scratch_yn(patient_seq)[2]
+    p_health_info['rs_bodycon'] = dao.get_bodycon_score(patient_seq)[2]
+    p_health_info['rs_clean'] = dao.get_clean_score(patient_seq)[2]
+    p_health_info['rs_hearing'] = dao.get_hearing_score(patient_seq)[2]
+    p_health_info['rs_comm'] = dao.get_comm_score(patient_seq)[2]
+    p_health_info['rs_pron'] = dao.get_pron_score(patient_seq)[2]
+
+    return p_health_info
+
+#신체상태, 청결상태, 낙상위험도, 인지기능 관찰, 욕창위험도 목록
+def get_cond_info(patient_seq, _type):
+    if _type == 'bodycon':
+        condinfo = dao.get_bodycon_score(patient_seq, '')
+    elif _type == 'cleancon':
+        condinfo = dao.get_clean_score(patient_seq, '')
+    elif _type == 'fallcon':
+        condinfo = dao.get_fallcon_score(patient_seq, '')
+    elif _type == 'cognicon':
+        condinfo = dao.get_cognicon_score(patient_seq, '')
+    elif _type == 'decubcon':
+        condinfo = dao.get_decub_score(patient_seq, '')
+    else:
+        condinfo = ''
+
+    return condinfo
+
+#건강상태 목록
+def get_health_info(patient_seq):
+    health_info = dao.get_health_info(patient_seq)
+
+    return health_info

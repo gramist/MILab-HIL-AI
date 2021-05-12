@@ -23,7 +23,7 @@ def get_paging(data, offset=0, per_page=10):
 
 @app.route('/<patient_seq>')
 def main(patient_seq):
-    get_row = 5
+    # get_row = 5
     index = controller.get_abnormal_week(patient_seq)
     return render_template("Hil_index.html", index=index)
 
@@ -65,8 +65,8 @@ def table3(patient_seq):
 
 
 @app.route('/map/<patient_seq>')
-def map(patient_seq):
-    first_location= controller.get_patient_first_location(patient_seq)
+def patient_map(patient_seq):
+    first_location = controller.get_patient_first_location(patient_seq)
     location_list = controller.get_today_locations(patient_seq)
     return render_template("Hil_map.html", first_location=first_location, location_list=location_list)
 
@@ -81,6 +81,50 @@ def schedule(patient_seq):
     pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
     return render_template('Hil_schedule.html', posts3=pagination_posts3, page=page, per_page=per_page,
                            pagination=pagination)
+
+
+# 가이드라인
+@app.route('/guide/<patient_seq>')
+def guide(patient_seq):
+    g_opinion = controller.get_guide_opinion(patient_seq)
+    p_health_info = controller.get_guide_scores(patient_seq)
+    return render_template('Hil_guide.html', g_opinion=g_opinion, p_health_info=p_health_info, patient_seq=patient_seq)
+
+
+# 신체상태, 청결상태, 낙상위험도, 인지기능 관찰, 욕창위험도 목록
+@app.route('/<_type>/<patient_seq>')
+def detailcon(_type, patient_seq):
+    typetotxt = {'bodycon': '신체상태 관찰', 'cleancon': '청결상태', 'fallcon': '낙상 위험도', 'cognicon': '인지기능 관찰', 'decubcon': '욕창 위험도'}
+    cond_info = controller.get_cond_info(patient_seq, _type)
+
+    page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+    total = len(cond_info)
+    pagination_infos = get_paging(cond_info, offset=offset, per_page=per_page)
+    pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
+
+    return render_template('Hil_detailcon.html', cond_infos=pagination_infos, title=typetotxt[_type], page=page, per_page=per_page,
+                           pagination=pagination)
+
+
+# 건강상태 목록
+@app.route('/healthcon/<patient_seq>')
+def healthcon(patient_seq):
+    p_health_info = controller.get_health_info(patient_seq)
+
+    page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+    total = len(p_health_info)
+    pagination_infos = get_paging(p_health_info, offset=offset, per_page=per_page)
+    pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
+
+    return render_template('Hil_healthcon.html', health_infos=pagination_infos, page=page,
+                           per_page=per_page,pagination=pagination)
+
+
+# 최신 건강상태 상세(혈당, 혈압, 청취능력, 의사소통, 발음능력, 상처, 발생여부)
+@app.route('/health_recent/<patient_seq>')
+def health_recent(patient_seq):
+    p_health_info = controller.get_health_info(patient_seq)[0]
+    return render_template('Hil_health_recent.html', p_health_info=p_health_info)
 
 
 @app.route('/ml/<patient_seq>')
