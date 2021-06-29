@@ -18,11 +18,11 @@ class requestData:
             packet_type = ''
             if eq(data['PacketType'], 'EstimatedSchedule'):
                 packet_type = 'todayschedule'
-            elif data['PacketType'] is 'PastSchedule':
+            elif data['PacketType'] == 'PastSchedule':
                 packet_type = 'pastschedule'
-            elif data['PacketType'] is 'AbnormalBehavior':
+            elif data['PacketType'] == 'AbnormalBehavior':
                 packet_type = 'abnormalbehavior'
-            elif data['PacketType'] is 'OutdoorSensing':
+            elif data['PacketType'] == 'OutdoorSensing':
                 packet_type = 'outdoorsensing'
 
             data = json.dumps(data, ensure_ascii=False)

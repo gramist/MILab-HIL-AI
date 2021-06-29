@@ -12,6 +12,7 @@ app = Flask(__name__)
 print(os.path.dirname(os.path.realpath(__file__)))
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 print(os.getcwd())
+
 learner = Learner(414, 1, 0, 0, 0)
 process = learner.getProcess()
 

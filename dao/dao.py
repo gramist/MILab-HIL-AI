@@ -73,13 +73,35 @@ def del_data(patient_seq):
         conn.close()
 
 
-def get_outdoor_data():
+def get_outdoor_data(outdoor_recent_date):
     try:
         conn = getConnection()
 
         cursor = conn.cursor()
-        sql = 'select ILLUMINANCE, NOISE, LOG_TIME, PATIENT_SEQ from W_OUTDOOR_LOG where LOG_TIME between date_add(' \
-              'curdate(), interval -1 day) and curdate()'
+        sql = 'select ILLUMINANCE, NOISE, LOG_TIME, PATIENT_SEQ from W_OUTDOOR_LOG where LOG_TIME between ' \
+              '%s and curdate()'
+        cursor.execute(sql, outdoor_recent_date)
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-SELECT ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
+def get_outdoor_logtime():
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'SELECT LOG_TIME FROM W_OUTDOOR_LOG WHERE 1=1 AND LOG_TIME IN (SELECT MAX(LOG_TIME) FROM W_OUTDOOR_LOG)'
         cursor.execute(sql)
 
         data = cursor.fetchall()
@@ -380,14 +402,14 @@ def get_past_schedule(patient_seq):
     return data
 
 
-def get_w_sensor(patient_seq):
+def get_w_sensor(patient_seq, get_log_date):
     try:
         conn = getConnection()
 
         cursor = conn.cursor()
-        sql = 'SELECT SENSOR_LOG_TIME, SENSOR_CODE from W_SENSOR_LOG where PATIENT_SEQ=%s and ' \
-              'CREATED_TIME > curdate() order by SENSOR_LOG_TIME;'
-        cursor.execute(sql, patient_seq)
+        sql = 'SELECT SENSOR_LOG_TIME, SENSOR_CODE from W_SENSOR_LOG where PATIENT_SEQ=%s and CREATED_TIME > %s order by SENSOR_LOG_TIME;'
+        #sql = 'SELECT SENSOR_LOG_TIME, SENSOR_CODE from W_SENSOR_LOG where PATIENT_SEQ=%s order by SENSOR_LOG_TIME;'
+        cursor.execute(sql, (patient_seq, get_log_date))
 
         data = cursor.fetchall()
 
@@ -403,12 +425,35 @@ def get_w_sensor(patient_seq):
     return data
 
 
+def get_w_sensor_logtime(patient_seq):
+    try:
+        conn = getConnection()
+
+        cursor = conn.cursor()
+        sql = 'SELECT SENSOR_LOG_TIME FROM W_SENSOR_LOG WHERE PATIENT_SEQ=%s AND 1=1 AND SENSOR_LOG_TIME IN (SELECT MAX(SENSOR_LOG_TIME) FROM W_SENSOR_LOG)'
+        cursor.execute(sql, patient_seq)
+
+        data = cursor.fetchall()
+
+    except Exception as e:
+        conn.rollback()
+        print('[SQL-SELECT ERROR] : ', e)
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return data
+
+
 def get_w_sensor_patient_seq():
     try:
         conn = getConnection()
 
         cursor = conn.cursor()
-        sql = 'select distinct PATIENT_SEQ from W_SENSOR_LOG where CREATED_TIME > curdate()'
+        # sql = 'select distinct PATIENT_SEQ from W_SENSOR_LOG where CREATED_TIME > curdate()'
+        sql = 'select distinct PATIENT_SEQ from W_SENSOR_LOG'
         cursor.execute(sql)
 
         data = cursor.fetchall()
@@ -467,6 +512,7 @@ def run_sql_hard_code(sql):
 
     return True
 
+
 # Guideline DML START
 def get_guide_opinion(patient_seq):
     try:
@@ -498,6 +544,7 @@ def get_guide_opinion(patient_seq):
         conn.close()
 
     return data
+
 
 def get_cognicon_score(patient_seq, limit='limit 1'):
     try:
@@ -538,6 +585,7 @@ def get_cognicon_score(patient_seq, limit='limit 1'):
         conn.close()
 
     return data
+
 
 def get_fallcon_score(patient_seq, limit='limit 1'):
     try:
@@ -581,6 +629,7 @@ def get_fallcon_score(patient_seq, limit='limit 1'):
 
     return data
 
+
 def get_decub_score(patient_seq, limit='limit 1'):
     try:
         conn = getConnection()
@@ -623,6 +672,7 @@ def get_decub_score(patient_seq, limit='limit 1'):
 
     return data
 
+
 def get_bloodsugar(patient_seq, limit='limit 1'):
     try:
         conn = getConnection()
@@ -664,6 +714,7 @@ def get_bloodsugar(patient_seq, limit='limit 1'):
         conn.close()
 
     return data
+
 
 def get_bloodpress(patient_seq, limit='limit 1'):
     try:
@@ -737,6 +788,7 @@ def get_bloodpress(patient_seq, limit='limit 1'):
 #
 #     return data
 
+
 def get_scratch_yn(patient_seq, limit='limit 1'):
     try:
         conn = getConnection()
@@ -771,6 +823,7 @@ def get_scratch_yn(patient_seq, limit='limit 1'):
         conn.close()
 
     return data
+
 
 def get_bodycon_score(patient_seq, limit='limit 1'):
     try:
@@ -810,6 +863,7 @@ def get_bodycon_score(patient_seq, limit='limit 1'):
 
     return data
 
+
 def get_clean_score(patient_seq, limit='limit 1'):
     try:
         conn = getConnection()
@@ -846,6 +900,7 @@ def get_clean_score(patient_seq, limit='limit 1'):
 
     return data
 
+
 def get_hearing_score(patient_seq, limit='limit 1'):
     try:
         conn = getConnection()
@@ -880,6 +935,7 @@ def get_hearing_score(patient_seq, limit='limit 1'):
         conn.close()
 
     return data
+
 
 def get_comm_score(patient_seq, limit='limit 1'):
     try:
@@ -916,6 +972,7 @@ def get_comm_score(patient_seq, limit='limit 1'):
 
     return data
 
+
 def get_pron_score(patient_seq, limit='limit 1'):
     try:
         conn = getConnection()
@@ -950,6 +1007,7 @@ def get_pron_score(patient_seq, limit='limit 1'):
         conn.close()
 
     return data
+
 
 def get_health_info(patient_seq):
     try:

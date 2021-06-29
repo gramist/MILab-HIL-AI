@@ -41,17 +41,17 @@ class Learner:
             lstm_model.compile(loss='categorical_crossentropy', optimizer='adam',
                                metrics=['accuracy'])
 
-            # Vae Model load
-            json_file = open('./model_vae/model%d.json' % C, 'r')
-            loaded_vae_json = json_file.read()
-            json_file.close()
-            vae_model = model_from_json(loaded_vae_json)
-            # load weights into new model
-            vae_model.load_weights("./model_vae/model%d.h5" % C)
-            print("Loaded Vae model from disk")
-
-            vae_model.compile(loss='binary_crossentropy', optimizer='adadelta',
-                              metrics=['accuracy'])
+            # # # Vae Model load
+            # json_file = open('./model_vae/model%d.json' % C, 'r')
+            # loaded_vae_json = json_file.read()
+            # json_file.close()
+            # vae_model = model_from_json(loaded_vae_json)
+            # # load weights into new model
+            # vae_model.load_weights("./model_vae/model%d.h5" % C)
+            # print("Loaded Vae model from disk")
+            #
+            # vae_model.compile(loss='binary_crossentropy', optimizer='adadelta',
+            #                   metrics=['accuracy'])
 
             self.total_acc = total_acc
             self.total_loss = total_loss
@@ -133,6 +133,7 @@ class Learner:
     def make_schedule(self, batch):
         # print('batch : ', batch)
         batch_x = np.array(batch)
+        batch_x = np.reshape(batch_x, (96,))
         decoded_imgs = self.vae_model.predict(batch_x, verbose=0)
         # print(decoded_imgs)
         loss, acc = self.vae_model.evaluate(batch_x, batch_x, verbose=0)

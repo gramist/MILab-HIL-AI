@@ -25,7 +25,7 @@ def abnormal_checker(request, result, process, learner):
             log_ = process.log2onehot(result)
             batch[i] = log_
             i += 1
-        # ##############################################
+        #################################################
         status = learner.getStatus(batch)
 
         print('status : ', status)
@@ -40,7 +40,7 @@ def abnormal_checker(request, result, process, learner):
 
 
 def set_ai_schedule_data(patient_seq, process, learner):
-    batch = process.process(patient_seq)
+    batch = process.process(108)
     schedule_data = learner.make_schedule(batch)
 
     sensorActionD = {1: "화장실 이용", 2: "냉장고 이용", 3: "식사 시간", 4: "외출 시간", 5: "방문 열림", 6: "약 복용 시간", 7: "기타"}
@@ -190,12 +190,14 @@ def insert_data_avg():
     # Delete all data int today_avg table.
     dao.del_all_data_today_avg()
     # 시간 값 추출 후 아침, 점심, 저녁, 밤, 환자번호로 구분
-    outdoor_data = dao.get_outdoor_data()
+    outdoor_recent_date = dao.get_outdoor_logtime()
+    outdoor_recent_date = outdoor_recent_date[0][0].split(' ')[0]
+    outdoor_data = dao.get_outdoor_data(outdoor_recent_date)
 
     patient_cnt = 0
     day_time_data = [[[], [], [], []]]
     for i, val in enumerate(outdoor_data):
-        if i is 0:
+        if i == 0:
             day_time_data[patient_cnt].append(val[3])
             i += 1
         elif day_time_data[patient_cnt][4] is not val[3]:
@@ -204,13 +206,14 @@ def insert_data_avg():
             day_time_data[patient_cnt].append(val[3])
 
         if day_time_data[patient_cnt][4] == val[3]:
-            if 5 < val[2].time().hour < 12:
+            val_time = datetime.strptime(val[2], '%Y-%m-%d %H:%M:%S')
+            if 5 < val_time.time().hour < 12:
                 day_time_data[patient_cnt][0].append(val)
-            elif 11 < val[2].time().hour < 18:
+            elif 11 < val_time.time().hour < 18:
                 day_time_data[patient_cnt][1].append(val)
-            elif 17 < val[2].time().hour < 22:
+            elif 17 < val_time.time().hour < 22:
                 day_time_data[patient_cnt][2].append(val)
-            elif (21 < val[2].time().hour) or (val[2].time().hour < 6):
+            elif (21 < val_time.time().hour) or (val_time.time().hour < 6):
                 day_time_data[patient_cnt][3].append(val)
 
     # day = [('95', '76', datetime.datetime(2019, 11, 5, 6, 30, 33), 37), ('95', '76', datetime.datetime......)]
@@ -223,12 +226,13 @@ def insert_data_avg():
             patient_seq = 0
             day_time = 'MORNING'
 
-            if type(day) is not int:
+            if (type(day) is not int) and (len(day) != 0):
                 for val in day:
                     avg_list[0] += int(val[0])
                     avg_list[1] += int(val[1])
                     val_cnt += 1
                     patient_seq = val[3]
+
                 avg_list[0] = avg_list[0] / val_cnt
                 avg_list[1] = avg_list[1] / val_cnt
                 # day_data[i] = avg_list
@@ -379,7 +383,9 @@ def get_abnormal_week(patient_seq):
 
 
 def get_sensor_list(patient_seq):
-    get_data = dao.get_w_sensor(patient_seq)
+    get_log_date = dao.get_w_sensor_logtime(patient_seq)
+    get_log_date = get_log_date[0][0].split(' ')[0]
+    get_data = dao.get_w_sensor(patient_seq, get_log_date)
 
     result = []
     for i, row in enumerate(get_data):
