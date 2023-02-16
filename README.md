@@ -49,3 +49,6 @@ Terminal_2
 ```
 > curl -i -H "Content-Type: application/json" -X POST -d "{\"PacketType\": \"SensorLog\", \"PatientSeq\": 37, \"SensorIdk\": \"A2:22:44:55:22:11\", \"SensorCode\": 1, \"SensorCount\": 11, \"LogTime\": \"2019-08-25 1:16:30\"}" 127.0.0.1:5000/foo
 ```
+
+
+![shin4-3100087-large](https://user-images.githubusercontent.com/25500967/219308924-9f814c83-0d3f-4797-9824-7ed237296fb7.gif)
